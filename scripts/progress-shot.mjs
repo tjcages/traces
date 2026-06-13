@@ -49,6 +49,8 @@ const { result: { targetId } } = await send('Target.createTarget', { url: 'about
 const { result: { sessionId: sid } } = await send('Target.attachToTarget', { targetId, flatten: true });
 await send('Page.enable', {}, sid);
 await send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 2, mobile: MOBILE }, sid);
+// Force a deterministic colour scheme (light by default; SHOT_SCHEME=dark to override).
+await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: process.env.SHOT_SCHEME || 'light' }] }, sid);
 const loaded = onceEvent('Page.loadEventFired', sid);
 await send('Page.navigate', { url: URL }, sid);
 await loaded;
