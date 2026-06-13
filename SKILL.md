@@ -4,17 +4,14 @@ description: >-
   Install and maintain a self-contained, user-facing PROGRESS LOG for a repo
   (progress/index.html — timestamped entries, status pills, condense + per-post
   delete, optional Cloudflare-tunnel live preview) plus a living Architecture
-  tab. Use this skill whenever: setting up / scaffolding a progress log or a
-  project changelog page; the user types /progress or /changelog; you finish or
-  ship a feature, fix, refactor, or notable change in a repo that has (or should
-  have) a progress/ log — record it even if the user didn't explicitly say
-  "progress log"; updating, editing, or condensing existing log entries;
-  maintaining the architecture map/diagram; choosing how strictly agents keep
-  the log current (rule / hook / manual enforcement); or turning the live-preview
-  link on/off. Bias toward using it for any "log/record what changed", "update
-  the changelog", "what have we built", or "set up a changelog" request about a
-  project's own progress. (This is the project's own progress log built by this
-  skill — not for reading a dependency's external CHANGELOG.md file.)
+  tab. Use whenever: scaffolding a progress log / project changelog page; the
+  user types /progress or /changelog; you finish or ship a feature, fix, or
+  notable change in a repo that has (or should have) a progress/ log — record it
+  even if not explicitly asked; updating, editing, or condensing log entries;
+  maintaining the architecture map; choosing enforcement (rule / hook / manual);
+  or toggling the live-preview link. Bias toward any "log/record what changed",
+  "update the changelog", or "set up a changelog" request about the project's own
+  progress — but NOT for reading a dependency's external CHANGELOG.md.
 ---
 
 # Progress log
