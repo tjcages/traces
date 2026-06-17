@@ -10,6 +10,17 @@
 //
 // Serve progress/ first (the `progress` entry in .claude/launch.json, or
 // `python3 -m http.server -d progress`).
+//
+// AUTHED APP SHOTS (capture a signed-in screen of the running dev app):
+// the app gates pages behind auth, so a fresh headless Chrome lands on
+// /sign-in. Inject a session cookie via SHOT_COOKIE="name=value". In local
+// dev the key-free login mints one for you — one-liner:
+//   TOKEN=$(curl -s -X POST localhost:5173/api/dev-login \
+//     -H 'content-type: application/json' -d '{"email":"you@example.com"}' \
+//     | sed -E 's/.*"token":"([^"]+)".*/\1/')
+//   SHOT_COOKIE="better-auth.session_token=$TOKEN" \
+//     node scripts/progress-shot.mjs "http://localhost:5173/<deep-link>" \
+//       progress/media/<name>.png 1000 720 desktop
 import { spawn } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 
@@ -51,6 +62,17 @@ await send('Page.enable', {}, sid);
 await send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 2, mobile: MOBILE }, sid);
 // Force a deterministic colour scheme (light by default; SHOT_SCHEME=dark to override).
 await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: process.env.SHOT_SCHEME || 'light' }] }, sid);
+// Optional auth: SHOT_COOKIE="name=value" seeds a session cookie so authed app
+// screens render signed-in instead of bouncing to /sign-in. (value may contain
+// '=' — split on the first one only.)
+if (process.env.SHOT_COOKIE) {
+  const raw = process.env.SHOT_COOKIE;
+  const eq = raw.indexOf('=');
+  const name = raw.slice(0, eq);
+  const value = raw.slice(eq + 1);
+  const { hostname } = new globalThis.URL(URL);
+  await send('Network.setCookie', { name, value, domain: hostname, path: '/' }, sid);
+}
 const loaded = onceEvent('Page.loadEventFired', sid);
 await send('Page.navigate', { url: URL }, sid);
 await loaded;

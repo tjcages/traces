@@ -21,47 +21,56 @@
   look) or "done". "new" auto-ages back to "done" after ~2h untouched, and
   you should demote stale "new"s yourself when you start / move on — keep it
   to ~one at a time; not everything needs it.
-  MEDIA: one image per task — overwrite the SAME file as you iterate this
-  session; keep only the most recent. Don't pile up near-duplicate variants.
-  STYLE: header <=5 words. Bullets only, each <=12 words. No prose.
+  MEDIA: if the change is VISIBLE on screen — a view, dialog, state, layout,
+  or motion — a screenshot is REQUIRED, not optional. The test is "can I show
+  it?", NOT "is this a big UI feature?". A behavior/bug fix whose result you
+  can see (a dialog opening, a row updating) IS visual — capture it. Skip
+  media ONLY for genuinely non-visual work (server/types/tooling). Authed app
+  screens: see the SHOT_COOKIE recipe in scripts/progress-shot.mjs. One image
+  per task — overwrite the SAME file as you iterate; keep only the most recent.
+  STYLE: header <=5 words. 1-3 bullets — use the FEWEST that say what changed +
+  the result; <=12 words each is a ceiling, not a target. Bullets only, no prose.
   ========================================================================
 -->
 <style>
   :root {
-    /* Surfaces: light-grey page, white primary cards, grey secondary. No borders. */
-    --bg: #f7f7f9;
-    --primary: #ffffff;
-    --fg: #1d1d1f;
-    --fg-2: #6e6e73;
-    --fg-3: #a1a1a6;
-    /* One accent (green) + semantic status colors. */
-    --accent: #28a745;
-    --green: #1f9d44;
-    --amber: #b06a00;
-    --red: #d70015;
-    --blue: #007aff;   /* "new" tag — newest post */
-    /* Type scale — three sizes only. */
+    /* GitHub Primer — light. Boxes on a subtle canvas, hairline borders. */
+    --bg: #f6f8fa;        /* canvas.subtle (page) */
+    --primary: #ffffff;   /* canvas.default (boxes) */
+    --border: #d0d7de;    /* border.default (hairline) */
+    --fg: #1f2328;        /* fg.default */
+    --fg-2: #59636e;      /* fg.muted */
+    --fg-3: #818b98;      /* fg.subtle */
+    --accent: #0969da;    /* accent.fg (links) */
+    --green: #1a7f37;     /* success.fg */
+    --amber: #9a6700;     /* attention.fg */
+    --red: #cf222e;       /* danger.fg */
+    --blue: #0969da;      /* "new" status */
+    --tab-accent: #fd8c73;/* selected underline */
     --t-meta: 12px;
     --t-body: 14px;
-    --t-title: 15px;
-    --r-card: 12px;
-    --r-img: 8px;
-    --r-code: 5px;
-    --mono: ui-monospace, "SF Mono", Menlo, monospace;
-    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --t-title: 16px;
+    --r-card: 6px;
+    --r-img: 6px;
+    --r-code: 6px;
+    --r-label: 2em;       /* pill labels */
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #1c1c1e;
-      --primary: #2c2c2e;
-      --fg: #f5f5f7;
-      --fg-2: #98989d;
-      --fg-3: #636366;
-      --accent: #30d158;
-      --green: #30d158;
-      --amber: #ffd60a;
-      --red: #ff453a;
-      --blue: #0a84ff;
+      --bg: #0d1117;      /* canvas.default (dark page) */
+      --primary: #151b23; /* canvas.subtle (dark boxes) */
+      --border: #30363d;
+      --fg: #e6edf3;
+      --fg-2: #9198a1;
+      --fg-3: #6e7681;
+      --accent: #4493f8;
+      --green: #3fb950;
+      --amber: #d29922;
+      --red: #f85149;
+      --blue: #4493f8;
+      --tab-accent: #f78166;
     }
   }
   * { box-sizing: border-box; }
@@ -94,11 +103,15 @@
   .sort:hover { color: var(--fg); }
   .sort .arrow { color: inherit; font-weight: 600; }
 
-  /* Tabs — own row beneath the title (Log · Map · Architecture). */
-  .tabs { display: flex; gap: 3px; flex-basis: 100%; margin-left: 0; }
-  .tabs a { font-size: var(--t-meta); color: var(--fg-2); text-decoration: none; padding: 5px 12px; border-radius: 100px; }
-  .tabs a:hover { color: var(--fg); }
-  .tabs a.active { background: var(--primary); color: var(--fg); font-weight: 600; }
+  /* Tabs — GitHub UnderlineNav: text + 2px active underline, hairline under all. */
+  .tabs { display: flex; gap: 6px; flex-basis: 100%; margin: 6px 0 0; border-bottom: 1px solid var(--border); }
+  .tabs a {
+    font-size: var(--t-body); color: var(--fg-2); text-decoration: none;
+    padding: 7px 10px; border-bottom: 2px solid transparent; margin-bottom: -1px;
+    border-radius: 6px 6px 0 0;
+  }
+  .tabs a:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 6%, transparent); }
+  .tabs a.active { color: var(--fg); font-weight: 600; border-bottom-color: var(--tab-accent); }
 
   /* ── Entry (primary, white, no border) ────────────────── */
   .entries { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; position: relative; }
@@ -106,8 +119,9 @@
   /* Reading order inside a post: head → title → image → bullets. */
   .entry {
     background: var(--primary);
+    border: 1px solid var(--border);
     border-radius: var(--r-card);
-    padding: 16px 18px;
+    padding: 16px;
     transition: margin .2s ease;
     display: flex; flex-direction: column;
     position: relative;
@@ -120,31 +134,32 @@
   .entry.push-up   { margin-bottom: 18px; }
   .entry.push-down { margin-top: 18px; }
 
-  /* Meta row — relative time + small badges, all one (small) size. */
+  /* Meta row — relative time + ref/label chips (GitHub sans, muted). */
   .entry-head {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 7px;
-    font-family: var(--mono); font-size: 11px; color: var(--fg-2);
-    font-variant-numeric: tabular-nums; margin-bottom: 9px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    font-family: var(--sans); font-size: var(--t-meta); color: var(--fg-2);
+    margin-bottom: 9px;
   }
-  /* Branch + status — small badges, a notch smaller than the meta line. */
-  .branch, .status { font-size: 11px; line-height: 1.5; border-radius: var(--r-code); padding: 2px 7px; white-space: nowrap; }
-  /* Branch — dim grey badge, links to GitHub. */
+  /* Branch — a GitHub ref chip (mono, hairline, links to the branch). */
   .branch {
-    font-family: var(--mono); color: var(--fg-2); background: var(--bg);
-    text-decoration: none;
+    font-family: var(--mono); font-size: var(--t-meta); line-height: 18px;
+    color: var(--fg-2); background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--r-code); padding: 0 7px; white-space: nowrap; text-decoration: none;
   }
-  a.branch:hover { color: var(--fg); }
+  a.branch:hover { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
   /* "updated" marker — shows when an entry was edited after it was created. */
   .entry-head .edited { color: var(--fg-3); }
   .entry-head .edited:empty { display: none; }
   .entry-head .edited::before { content: "·"; margin-right: 6px; color: var(--fg-3); }
-  /* Status — colored pill: full-color text on a 10%-opacity bg of that color.
-     "new" is "done + worth a timely look"; JS ages it back to "done". */
-  .status { font-weight: 600; margin-left: auto; }
-  .status[data-status="new"]    { color: var(--blue);  background: color-mix(in srgb, var(--blue) 12%, transparent); }
-  .status[data-status="done"]   { color: var(--green); background: color-mix(in srgb, var(--green) 10%, transparent); }
-  .status[data-status="wip"]    { color: var(--amber); background: color-mix(in srgb, var(--amber) 10%, transparent); }
-  .status[data-status="failed"] { color: var(--red);   background: color-mix(in srgb, var(--red) 10%, transparent); }
+  /* Status — GitHub Label pill: tinted bg + colored text + colored hairline. */
+  .status {
+    margin-left: auto; font-size: var(--t-meta); font-weight: 500; line-height: 18px;
+    padding: 0 7px; border-radius: var(--r-label); border: 1px solid transparent; white-space: nowrap;
+  }
+  .status[data-status="new"]    { color: var(--blue);  background: color-mix(in srgb, var(--blue) 12%, transparent);  border-color: color-mix(in srgb, var(--blue) 30%, transparent); }
+  .status[data-status="done"]   { color: var(--green); background: color-mix(in srgb, var(--green) 12%, transparent); border-color: color-mix(in srgb, var(--green) 30%, transparent); }
+  .status[data-status="wip"]    { color: var(--amber); background: color-mix(in srgb, var(--amber) 14%, transparent); border-color: color-mix(in srgb, var(--amber) 30%, transparent); }
+  .status[data-status="failed"] { color: var(--red);   background: color-mix(in srgb, var(--red) 12%, transparent);   border-color: color-mix(in srgb, var(--red) 30%, transparent); }
 
   .entry h2 { font-size: var(--t-title); font-weight: 600; letter-spacing: -0.01em; margin: 0 0 7px; }
   .entry-body { font-size: var(--t-body); color: var(--fg); overflow-wrap: break-word; }
@@ -162,7 +177,7 @@
   /* ── Media — sits between the title and the bullets ── */
   .media { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin: 0 0 12px; }
   .media:empty { display: none; }
-  .media figure { margin: 0; background: var(--bg); border-radius: var(--r-img); padding: 6px; }
+  .media figure { margin: 0; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-img); padding: 6px; }
   .media img, .media video {
     width: 100%; height: auto; display: block; border-radius: calc(var(--r-img) - 3px);
   }
