@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tech stack · Progress</title>
+<!--
+  TECH-STACK PAGE  —  a plain-English "what is this repo built on" reference.
+  ┌─ THIS IS A TEMPLATE. On install it's a placeholder. FILL IT FROM THE REPO: ─┐
+  │  • Read the manifests — package.json / pnpm-lock, requirements.txt /        │
+  │    pyproject, go.mod, Cargo.toml, Gemfile, *.csproj, Package.swift, etc.    │
+  │  • Compute the language bar from byte share of each language's files.       │
+  │  • One card per area (languages, framework, data, infra, UI, auth, tests,   │
+  │    tooling…). Each dep is a `.dep` row: name · plain-English one-liner ·    │
+  │    version. Write for a NON-expert — what it does, not jargon.              │
+  └────────────────────────────────────────────────────────────────────────────┘
+  Keep it CURRENT: when a dep/tool is added, removed, or major-version-bumped,
+  update the matching card + the language bar. See progress/README.md →
+  "The tech-stack page (stack.html)". Style mirrors about.html — reuse its
+  classes, no new look.
+-->
+<style>
+  :root {
+    --bg: #f7f7f9; --primary: #ffffff; --fg: #1d1d1f; --fg-2: #6e6e73; --fg-3: #a1a1a6;
+    --green: #1f9d44; --blue: #007aff; --r-card: 12px; --r-code: 6px; --line: #ececef;
+    --code-bg: #f5f5f7; --code-fg: #2b2b30;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    /* language colors — set per language (GitHub-style) */
+    --l-1: #3178c6; --l-2: #f05138; --l-3: #e38c00; --l-4: #563d7c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1c1c1e; --primary:#2c2c2e; --fg:#f5f5f7; --fg-2:#98989d; --fg-3:#636366;
+      --green:#30d158; --blue:#0a84ff; --line:#3a3a3e; --code-bg:#1f1f21; --code-fg:#e3e3e6; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 660px; margin: 0 auto; padding: 24px 16px 96px; }
+  .masthead { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .masthead h1 { font-size: 15px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  .back { margin-left: auto; font-size: 12px; color: var(--fg-2); text-decoration: none; }
+  .back:hover { color: var(--fg); }
+  .lede { font-size: 14px; color: var(--fg-2); margin: 0 0 18px; }
+
+  /* ── Language bar (GitHub-style) ── */
+  .langwrap { background: var(--primary); border: 1px solid var(--line); border-radius: var(--r-card); padding: 14px 16px; margin-bottom: 10px; }
+  .langbar { display: flex; height: 9px; border-radius: 5px; overflow: hidden; background: var(--code-bg); }
+  .langbar span { height: 100%; }
+  .lang-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 11px; }
+  .lang-legend .li { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--fg-2); }
+  .lang-legend .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .lang-legend b { color: var(--fg); font-weight: 600; }
+  .lang-legend .pct { color: var(--fg-3); }
+
+  /* ── Expandable cards (mirrors about.html) ── */
+  details.card {
+    background: var(--primary); border: 1px solid var(--line); border-radius: var(--r-card);
+    margin-bottom: 10px; overflow: hidden;
+  }
+  summary {
+    display: flex; align-items: center; gap: 9px; cursor: pointer; list-style: none;
+    padding: 14px 16px; font-size: 14px; font-weight: 600; letter-spacing: -0.01em;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary .chev { width: 15px; height: 15px; flex: none; color: var(--fg-3); transition: transform .2s ease; }
+  details[open] summary .chev { transform: rotate(180deg); }
+  summary .tag { margin-left: auto; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--fg-3); }
+  .body { padding: 0 16px 16px; }
+  .body > :first-child { margin-top: 0; }
+  .body > :last-child { margin-bottom: 0; }
+  p { margin: 0 0 10px; }
+  ul { margin: 0 0 10px; padding-left: 18px; }
+  li { margin: 4px 0; color: var(--fg-2); }
+  li b, p b { color: var(--fg); font-weight: 600; }
+  p, .body { color: var(--fg-2); }
+  code { font-family: var(--mono); font-size: 0.85em; color: var(--fg); background: var(--code-bg); border-radius: var(--r-code); padding: 1px 6px; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Dependency rows (name · plain-English · version) ── */
+  .deps { display: flex; flex-direction: column; }
+  .dep { display: flex; align-items: baseline; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); }
+  .dep:first-child { border-top: 0; }
+  .dep .nm { font-weight: 600; color: var(--fg); flex: none; min-width: 122px; letter-spacing: -0.01em; }
+  .dep .ds { color: var(--fg-2); flex: 1; font-size: 13.5px; }
+  .dep .ver { font-family: var(--mono); font-size: 11px; color: var(--fg-3); white-space: nowrap; flex: none; }
+  @media (max-width: 460px) {
+    .dep { flex-wrap: wrap; gap: 2px 10px; }
+    .dep .nm { min-width: 0; }
+    .dep .ds { flex-basis: 100%; order: 3; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="masthead">
+      <h1>__PROJECT__ — tech stack</h1>
+      <a class="back" href="index.html">← Log</a>
+    </div>
+    <p class="lede">Everything this repo is built on — the languages, frameworks, and tools
+      behind it. Tap a section to expand.</p>
+
+    <!-- ── Language split (compute widths/percentages from byte share) ── -->
+    <div class="langwrap">
+      <div class="langbar">
+        <span style="width:60%;background:var(--l-1)"></span>
+        <span style="width:30%;background:var(--l-2)"></span>
+        <span style="width:10%;background:var(--l-3)"></span>
+      </div>
+      <div class="lang-legend">
+        <span class="li"><span class="dot" style="background:var(--l-1)"></span><b>Language A</b> <span class="pct">60%</span></span>
+        <span class="li"><span class="dot" style="background:var(--l-2)"></span><b>Language B</b> <span class="pct">30%</span></span>
+        <span class="li"><span class="dot" style="background:var(--l-3)"></span><b>Language C</b> <span class="pct">10%</span></span>
+      </div>
+    </div>
+
+    <details class="card" open>
+      <summary><span class="chev"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> At a glance</summary>
+      <div class="body">
+        <p><b>Fill this in from the repo.</b> A one-paragraph summary of what the project is
+          built on, then a few headline rows below.</p>
+        <div class="deps">
+          <div class="dep"><span class="nm">Framework</span><span class="ds">the main app framework, in plain English</span><span class="ver">vX</span></div>
+          <div class="dep"><span class="nm">Data</span><span class="ds">where state lives</span><span class="ver">—</span></div>
+          <div class="dep"><span class="nm">Hosting</span><span class="ds">where it runs</span><span class="ver">—</span></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="card">
+      <summary><span class="chev"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Languages <span class="tag">N</span></summary>
+      <div class="body">
+        <div class="deps">
+          <div class="dep"><span class="nm">Language A</span><span class="ds">what it's used for here</span><span class="ver">60%</span></div>
+          <div class="dep"><span class="nm">Language B</span><span class="ds">what it's used for here</span><span class="ver">30%</span></div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Add a card per area: framework & runtime, data, infra, UI, auth, AI,
+         tests, build/tooling… Each dep = a .dep row. Delete cards that don't apply. -->
+
+  </div>
+</body>
+</html>

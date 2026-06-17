@@ -112,6 +112,29 @@ purpose** — this is the seed of a take-any-repo skill:
 - Preview: `python3 -m http.server -d progress` (or the `progress` entry in
   `.claude/launch.json`) — esm.sh modules need network.
 
+## The tech-stack page (`stack.html` — the Tech stack tab)
+
+A plain-English "what is this repo built on" reference, styled exactly like the
+Readme page (`about.html`): a GitHub-style **language bar** on top, then
+expandable cards grouped by area (languages, framework & runtime, data, infra,
+UI, auth, AI, tests, tooling…). Each card lists its deps as
+`name · plain-English one-liner · version` rows.
+
+On first install it's a **placeholder — fill it from the repo:**
+
+- Read the manifests — `package.json`, `go.mod`, `Cargo.toml`, `Package.swift`,
+  `requirements.txt`/`pyproject.toml`, `Gemfile`, `*.csproj`, plus the infra
+  config (e.g. `wrangler.jsonc`, `Dockerfile`, CI). One card per area; write each
+  description for a **non-expert** — what it does, not jargon.
+- Compute the `.langbar` segment widths + legend percentages from each language's
+  **byte share**, e.g. `find <dir> -name '*.ext' | xargs cat | wc -c`.
+
+**Keep it current** when the stack actually moves: a framework/library/tool
+added or removed → add/remove its `.dep` row (or a card); a **major** version
+bump → update the `.ver` pill (patch/minor don't matter); a real language-mix
+shift → refresh the bar; a new infra binding → add it. Source-only (no JS/build)
+— reuse the existing classes (`.langbar`, `.dep`, `.card`…), no new styles.
+
 ## Hard rules
 
 - **One entry per task; edit-in-place for the same task.** New entries go at the top
@@ -119,6 +142,7 @@ purpose** — this is the seed of a take-any-repo skill:
   `edited` span); don't append near-duplicates. Other agents' and older settled entries are
   append-only — never reorder or delete them.
 - **Keep the markers** (`ENTRIES:START` / `ENTRIES:END`) and the `entry-skeleton` template intact.
+- **Keep `stack.html` current** when the stack moves (a dep/tool/binding added or removed, a major version bump, a real language-mix shift). See "The tech-stack page" above.
 - **Commit AND push after every update** (to `main`, or land your worktree) so the change
   reaches origin and the user can pull and actually see it. Never leave updates sitting only
   in your working tree — if it isn't pushed, the user can't see it.

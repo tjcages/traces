@@ -15,6 +15,9 @@ changed. Protocol: **`progress/README.md`** (read it once).
   stale `new`s yourself when you start / move on (≈one `new` at a time).
 - **Maintain the Architecture tab.** When the system's shape changes, update
   `progress/architectures.data.js` (the one living map) — add/rename/retire nodes + edges.
+- **Maintain the Tech-stack tab.** When the stack moves (a framework/library/tool/binding
+  added or removed, a major version bump, a real language-mix shift), update
+  `progress/stack.html` — keep it a plain-English, current picture of what the repo runs on.
 - **One image per task**: overwrite the SAME media file as you iterate this session (capture
   at a real viewport with `node scripts/progress-shot.mjs`); don't pile up variants.
 - **Only edit your own** (same-branch) active entries; others' and older settled entries are

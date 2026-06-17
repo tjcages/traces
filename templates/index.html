@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>__PROJECT__ · Progress</title>
+<title>__PROJECT__ · Traces</title>
 <!--
   ========================================================================
   PERSISTENT PROGRESS LOG  -  read progress/README.md before editing.
@@ -266,8 +266,12 @@
   /* ════ Repo-style shell: top bar + [ TOC · feed · About ] ════ */
   .topbar { border-bottom: 1px solid var(--border); background: var(--primary); }
   .topbar-inner { max-width: 1180px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 12px; }
-  .repo { font-size: var(--t-title); font-weight: 600; color: var(--fg); text-decoration: none; letter-spacing: -0.01em; }
-  .repo-sub { color: var(--fg-3); font-weight: 400; }
+  .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .brand-logo { display: inline-flex; }
+  .brand-logo svg { height: 16px; width: auto; display: block; }
+  .brand-logo svg path { fill: var(--fg) !important; }
+  .brand-sep { color: var(--fg-3); font-size: var(--t-title); font-weight: 300; }
+  .repo { font-size: var(--t-title); font-weight: 600; color: var(--fg-2); text-decoration: none; letter-spacing: -0.01em; }
   .repo:hover { color: var(--fg); }
   .top-actions { margin-left: auto; display: flex; gap: 6px; }
   .top-actions a { font-size: var(--t-meta); color: var(--fg-2); text-decoration: none; padding: 5px 11px; border-radius: 100px; border: 1px solid var(--border); transition: background .15s ease, color .15s ease; }
@@ -279,35 +283,39 @@
     justify-content: center; align-items: start;
   }
 
-  /* Left — table of contents (scroll-spy), blended at the edges. */
+  /* Left — table of contents (scroll-spy): a fixed 8-item window that the
+     list ticks through (translateY) to keep the active item centered. */
   .toc { position: sticky; top: 20px; align-self: start; }
-  .toc-inner {
-    max-height: calc(100vh - 40px); overflow-y: auto; scrollbar-width: none;
-    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22px, #000 calc(100% - 26px), transparent 100%);
-            mask-image: linear-gradient(180deg, transparent 0, #000 22px, #000 calc(100% - 26px), transparent 100%);
+  .toc-head { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--fg-3); padding: 2px 0 10px 13px; }
+  .toc-viewport {
+    position: relative; overflow: hidden;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 26px, #000 calc(100% - 30px), transparent 100%);
+            mask-image: linear-gradient(180deg, transparent 0, #000 26px, #000 calc(100% - 30px), transparent 100%);
   }
-  .toc-inner::-webkit-scrollbar { display: none; }
-  .toc-head { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--fg-3); padding: 2px 0 8px 13px; }
-  .toc-list { position: relative; display: flex; flex-direction: column; }
+  .toc-list { position: relative; display: flex; flex-direction: column; will-change: transform; transition: transform .34s cubic-bezier(0.22,1,0.36,1); }
   .toc-thumb { position: absolute; left: 0; top: 0; width: 2px; height: 0; background: var(--accent); border-radius: 2px; opacity: 0; transition: transform .22s cubic-bezier(0.22,1,0.36,1), height .22s ease, opacity .22s ease; }
-  .toc-list a { font-size: var(--t-meta); line-height: 1.35; color: var(--fg-2); text-decoration: none; padding: 6px 10px 6px 13px; border-radius: 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .15s ease, background .15s ease; }
-  .toc-list a:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 4%, transparent); }
+  .toc-list a { font-size: var(--t-meta); line-height: 1.3; color: var(--fg-3); text-decoration: none; padding: 7px 10px 7px 13px; border-radius: 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .18s ease, background .15s ease, opacity .25s ease; }
+  .toc-list a:hover { color: var(--fg-2); background: color-mix(in srgb, var(--fg) 4%, transparent); }
   .toc-list a.active { color: var(--fg); font-weight: 600; }
 
   /* Center — feed head (tabs + sort) above the entries. */
   .feed-head { display: flex; align-items: center; gap: 10px; margin-bottom: 2px; }
   .entry { scroll-margin-top: 76px; }
 
-  /* Right — About / quick actions. */
-  .about { position: sticky; top: 20px; align-self: start; display: flex; flex-direction: column; gap: 22px; }
-  .about-sec { display: flex; flex-direction: column; gap: 9px; }
+  /* Right — quick actions / About. Plain icon+label rows (no cards), spread
+     out, with a full-width hairline divider between groups (ref: invoice UI). */
+  .about { position: sticky; top: 20px; align-self: start; display: flex; flex-direction: column; gap: 18px; }
+  .about-sec { display: flex; flex-direction: column; gap: 12px; }
   .about-title { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--fg-3); margin: 0; }
   .about-desc { font-size: var(--t-meta); line-height: 1.55; color: var(--fg-2); margin: 0; }
-  .qa { display: inline-flex; align-items: center; gap: 9px; font-family: var(--sans); font-size: var(--t-meta); color: var(--fg); text-decoration: none; text-align: left; background: var(--primary); border: 1px solid var(--border); border-radius: 12px; padding: 9px 12px; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
-  .qa:hover { background: color-mix(in srgb, var(--fg) 4%, transparent); border-color: color-mix(in srgb, var(--fg) 14%, transparent); }
-  .qa svg { width: 15px; height: 15px; color: var(--fg-2); flex: none; }
-  .qa-count { margin-left: auto; font-size: 11px; color: var(--fg-3); font-variant-numeric: tabular-nums; }
-  .about .foot-toggle { justify-content: space-between; width: 100%; }
+  .about-divider { height: 1px; width: 100%; background: var(--border); border: 0; margin: 2px 0; }
+  .qa { display: inline-flex; align-items: center; gap: 12px; font-family: var(--sans); font-size: var(--t-body); color: var(--fg); text-decoration: none; text-align: left; background: none; border: 0; border-radius: 6px; padding: 4px 4px; cursor: pointer; transition: color .15s ease; }
+  .qa:hover { color: var(--fg); }
+  .qa:hover svg { color: var(--fg); }
+  .qa:active { transform: scale(0.98); }
+  .qa svg { width: 17px; height: 17px; color: var(--fg-2); flex: none; transition: color .15s ease; }
+  .qa-count { margin-left: auto; font-size: var(--t-meta); color: var(--fg-3); font-variant-numeric: tabular-nums; }
+  .about .foot-toggle { justify-content: space-between; width: 100%; padding: 0 4px; }
 
   /* All-assets overlay. */
   .assets-overlay { position: fixed; inset: 0; z-index: 50; display: none; background: color-mix(in srgb, #000 45%, transparent); padding: 6vh 4vw; }
@@ -334,13 +342,44 @@
     .topbar-inner { padding: 12px 16px; }
   }
 
+  /* ── Collapsible entry details — bullets/media/branch tuck into a chin
+        revealed by a Show/Hide toggle (open by default for new/wip work). ── */
+  .entry-toggle {
+    order: 2; align-self: flex-start; margin: 4px 0 0 -3px;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--sans); font-size: var(--t-meta); font-weight: 600;
+    color: var(--fg-3); background: transparent; border: 0; border-radius: var(--r-code);
+    padding: 3px 7px; cursor: pointer; transition: color .15s ease, background .15s ease;
+  }
+  .entry-toggle:hover { color: var(--fg-2); background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  .entry-toggle .et-chev { width: 13px; height: 13px; display: inline-flex; transition: transform .28s cubic-bezier(0.22,1,0.36,1); }
+  .entry.open .entry-toggle .et-chev { transform: rotate(180deg); }
+  .entry-details { order: 3; display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s cubic-bezier(0.22,1,0.36,1); }
+  .entry.open .entry-details { grid-template-rows: 1fr; }
+  .entry-details-inner { overflow: hidden; min-height: 0; }
+  .entry.open .entry-details-inner { padding-top: 10px; }
+  .entry-details .media { margin-bottom: 0; }
+  .entry-details .media + .entry-body { margin-top: 12px; }
+  .entry-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
+
+  /* ── Day separators — tiny centered labels between date groups ── */
+  .day-sep {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; letter-spacing: .03em;
+    color: var(--fg-3); padding: 2px 0;
+  }
+
   template { display: none; }
 </style>
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="repo" href="__REPO_URL__">__PROJECT__ <span class="repo-sub">/ progress</span></a>
+      <div class="brand">
+        <span class="brand-logo" title="Traces" aria-label="Traces"><svg viewBox="0 0 1007 172" fill="none" xmlns="http://www.w3.org/2000/svg" role="img"><path d="M322.609 79.136C330.62 78.2491 338.059 85.6412 337.56 93.5782C337.464 95.099 337.215 96.6947 337.003 98.2072C337.878 99.6781 339.786 101.973 340.911 103.415L356.164 122.954C357.517 124.702 360.211 128.574 361.893 129.639C367.027 129.065 370.944 129.15 375.622 131.682C380.331 134.216 383.809 138.556 385.258 143.707C386.703 148.883 386.019 154.423 383.358 159.092C380.4 164.287 376.029 167.143 370.395 168.677C365.357 169.467 361.249 169.23 356.677 166.63C351.995 163.967 348.573 159.539 347.176 154.334C345.483 148.049 346.872 143.07 350.03 137.638C349.188 135.968 328.069 108.281 327.193 107.788C324.536 106.294 320.066 107.996 315.771 104.819C312.66 102.52 310.448 99.1122 309.916 95.2509C309.384 91.3916 310.479 87.5948 312.831 84.5178C315.309 81.2702 318.623 79.667 322.609 79.136Z"/><path d="M204.317 76.8286C206.184 76.6844 208.269 76.9588 210.001 77.6737C212.918 78.8745 215.228 81.2015 216.409 84.1287C217.656 87.1683 217.604 90.5865 216.265 93.5865C214.23 98.1698 209.656 101.109 204.624 100.772C202.254 100.614 200.697 99.8903 198.611 98.9C196.564 100.641 192.921 104.584 190.983 106.65C196.927 118.101 189.89 129.522 177.02 129.217C174.933 128.859 173.14 128.314 171.301 127.23C167.954 125.249 165.555 121.993 164.655 118.209C163.689 114.246 164.405 110.245 166.568 106.8C168.602 103.523 171.876 101.211 175.643 100.394C180.285 99.4056 183.852 100.7 187.687 103.196C190.229 100.594 192.757 97.9784 195.27 95.3487C191.081 86.9061 194.965 78.4998 204.317 76.8286Z"/><path d="M357.962 0.0365779C368.287 -0.603373 377.187 7.22999 377.869 17.5597C378.553 27.8894 370.763 36.8279 360.442 37.555C350.061 38.2865 341.063 30.4338 340.377 20.0425C339.689 9.65103 347.575 0.680482 357.962 0.0365779Z"/><path d="M293.41 104.717C295.489 104.565 297.481 104.811 299.377 105.724C301.83 106.904 303.816 109.028 304.7 111.616C305.55 114.112 305.456 117.574 304.163 119.956C303.059 121.991 281.738 143.509 279.289 145.434C278.16 146.322 276.673 146.701 275.309 147.075C272.8 147.412 270.856 147.298 268.519 146.066C266.003 144.733 264.151 142.419 263.4 139.671C262.729 137.274 262.922 134.012 264.244 131.811C265.59 129.566 286.489 108.312 288.859 106.508C290.196 105.489 291.799 105.075 293.41 104.717Z"/><path d="M326.287 34.0114C328.64 34.0823 330.703 34.7042 332.589 36.1584C334.728 37.7978 336.119 40.2278 336.449 42.9031C336.741 45.2517 336.073 48.6884 334.499 50.3894C331.137 54.0209 327.416 57.653 323.956 61.1881L315.184 70.1595C311.494 73.9222 309.997 76.3932 304.394 76.9083C302.005 76.7995 300.057 76.3332 298.107 74.7995C295.957 73.127 294.581 70.6505 294.296 67.9409C293.606 61.7721 297.787 58.74 301.672 54.7844L310.376 45.9347L316.634 39.534C319.958 36.137 321.127 34.4593 326.287 34.0114Z"/><path d="M251.593 21.0112C260.436 19.6949 268.656 25.8416 269.9 34.7002C271.145 43.5591 264.937 51.7351 256.074 52.9093C247.31 54.07 239.252 47.9428 238.023 39.1842C236.792 30.4255 242.851 22.3127 251.593 21.0112Z"/><path d="M245.849 140.813C254.45 139.785 262.246 145.95 263.238 154.561C264.228 163.172 258.036 170.949 249.427 171.904C240.867 172.852 233.152 166.7 232.166 158.139C231.183 149.58 237.297 141.835 245.849 140.813Z"/><path d="M266.592 59.7694C274.761 59.3144 277.528 66.9489 282.57 72.169C284.744 74.4219 287.74 78.1293 289.585 80.6086C293.928 86.4526 290.493 94.1337 283.262 95.6774C280.249 95.8771 276.885 95.1427 274.894 92.7419C270.105 86.696 264.781 80.8302 260.14 74.7022C255.66 68.787 259.677 61.2472 266.592 59.7694Z"/><path d="M70.8935 69.1494C75.832 69.0963 77.1425 72.2435 80.2073 75.3311C84.1736 79.3264 86.6292 82.4248 82.8672 87.78C83.9814 89.359 85.5443 91.1857 86.7816 92.7107C89.3601 91.9014 91.8242 91.6392 94.4347 92.5588C97.1509 93.5262 99.3595 95.5546 100.558 98.1781C101.732 100.843 101.771 103.87 100.665 106.562C99.3427 109.754 97.0841 111.406 94.0358 112.65C93.5692 112.764 93.0295 112.899 92.5559 112.972C89.726 113.436 86.8304 112.714 84.5503 110.973C82.2581 109.186 80.8075 106.529 80.542 103.633C80.1725 99.9985 81.3701 97.5914 83.539 94.9035C82.5492 93.4159 80.9503 91.4561 79.8287 90.0289C72.4304 90.7134 71.4412 86.3257 66.721 81.5469C62.3349 77.1053 64.6051 70.3425 70.8935 69.1494Z"/><path d="M224.359 100.152C228.436 100.046 231.382 102.233 233.569 105.406C236.536 109.71 245.94 117.789 247.065 122.334C247.61 124.538 247.237 126.868 246.032 128.79C244.429 131.403 242.501 132.3 239.682 132.951C238.143 133.038 234.883 132.762 233.881 131.644C230.459 127.823 217.352 114.379 216.683 110.168C216.336 107.894 216.905 105.574 218.269 103.72C219.897 101.492 221.754 100.6 224.359 100.152Z"/><path d="M147.207 64.341C149.696 64.1371 152.348 64.8052 154.045 66.7167C158.019 71.152 161.82 75.562 165.904 79.9193C168.992 83.2133 171.902 86.8645 169.329 91.5872C168.033 93.9672 166.317 95.0116 163.753 95.7065C156.875 96.2682 154.784 90.5178 150.514 86.2404C147.925 83.1176 144.736 80.2118 142.307 76.9796C138.339 71.6992 141.379 65.7836 147.207 64.341Z"/><path d="M129.113 39.9619C135.985 38.7985 142.492 43.4496 143.621 50.332C144.749 57.2144 140.069 63.7023 133.185 64.7973C126.35 65.8845 119.922 61.2409 118.801 54.4068C117.681 47.5729 122.289 41.1172 129.113 39.9619Z"/><path d="M232.588 50.8201C241.751 49.7992 245.104 60.0153 238.368 65.4499C234.027 68.9503 228.232 77.7411 222.972 79.0366C221.197 79.2211 219.554 79.0811 217.935 78.2729C216.14 77.3745 214.779 75.7992 214.149 73.8947C213.209 70.98 214.055 67.4043 216.421 65.4339C220.631 61.9269 227.582 52.3003 232.588 50.8201Z"/><path d="M140.171 101.605C143.966 101.413 147.093 103.766 147.868 107.474C148.144 108.793 147.89 111.501 146.997 112.535C142.878 117.308 138.209 121.866 133.592 126.16C132.916 126.787 131.239 127.126 130.406 127.282C127.091 127.35 124.423 126.029 123.12 122.854C120.832 117.281 125.963 113.892 129.269 110.316C131.682 107.705 134.292 105.116 136.894 102.714C137.566 102.094 139.265 101.781 140.171 101.605Z"/><path d="M115.376 66.6343C116.937 66.5278 118.363 66.7612 119.746 67.5372C121.373 68.4576 122.572 69.9835 123.081 71.7833C124.299 76.2409 121.389 78.6453 118.578 81.4304C115.642 84.3389 112.83 87.4388 109.79 90.2307C109.193 90.7779 107.617 91.1441 106.808 91.3417C98.8877 91.7911 95.9743 83.0948 102.233 77.9966C106.297 74.687 110.077 68.043 115.376 66.6343Z"/><path d="M57.9892 113.636C59.8076 113.48 60.897 113.457 62.6125 114.275C64.4178 115.132 65.78 116.709 66.3667 118.621C68.0173 124.107 63.205 127.126 59.9731 130.59C58.3526 132.327 57.1191 133.361 54.7897 133.962C52.9052 134.126 51.5521 134.016 49.8722 133.061C48.202 132.113 46.975 130.54 46.4593 128.688C45.6657 125.763 46.8843 122.99 49.0202 121.038C51.9733 118.34 54.0277 114.764 57.9892 113.636Z"/><path d="M111.836 126.639C114.979 125.977 118.234 127.057 120.36 129.466C122.486 131.873 123.155 135.239 122.113 138.279C121.07 141.317 118.477 143.561 115.321 144.156C110.513 145.061 105.872 141.924 104.917 137.122C103.962 132.321 107.048 127.644 111.836 126.639Z"/><path d="M50.6369 48.6991C54.9348 47.7371 59.1924 50.4641 60.119 54.7724C61.0457 59.0806 58.2863 63.3189 53.9738 64.2116C49.7098 65.0941 45.5323 62.371 44.6162 58.1115C43.7 53.852 46.3876 49.65 50.6369 48.6991Z"/><path d="M37.5136 86.8916C41.5331 86.2695 45.2894 89.0449 45.8813 93.0706C46.4733 97.0963 43.6742 100.835 39.6459 101.399C35.6593 101.956 31.9699 99.1892 31.3842 95.2051C30.7983 91.219 33.5352 87.5074 37.5136 86.8916Z"/><path d="M17.3713 111.878C20.9128 111.504 24.0945 114.054 24.5005 117.595C24.9066 121.136 22.385 124.342 18.8508 124.781C15.2716 125.224 12.0178 122.661 11.6066 119.076C11.1955 115.492 13.7848 112.259 17.3713 111.878Z"/><path d="M20.0662 65.6831C22.1447 65.3867 24.2219 66.2322 25.5031 67.8967C26.7842 69.5611 27.0711 71.7866 26.254 73.7218C25.4369 75.6571 23.6425 77.0027 21.5567 77.2439C18.3911 77.6098 15.519 75.3621 15.1113 72.1994C14.7034 69.0366 16.9112 66.1331 20.0662 65.6831Z"/><path d="M4.04406 89.3986C6.87018 88.737 9.69443 90.5033 10.3392 93.3348C10.9841 96.1663 9.20335 98.9832 6.36995 99.6136C3.55901 100.238 0.771709 98.4715 0.131949 95.6628C-0.507789 92.8542 1.24019 90.0539 4.04406 89.3986Z"/><path d="M471.875 156.892V37.1655H429.688V15.9741H539.062V37.1655H496.973V156.892H471.875Z"/><path d="M536.992 156.892V53.3765H561.309V71.2476H561.797C565.02 58.7476 573.613 51.228 585.527 51.228C588.555 51.228 591.387 51.7163 593.242 52.2046V74.1772C591.191 73.396 587.48 72.8101 583.379 72.8101C569.609 72.8101 561.309 81.5015 561.309 96.8335V156.892H536.992Z"/><path d="M633.848 158.65C613.145 158.65 599.18 145.857 599.18 127.4V127.205C599.18 108.845 613.438 97.8101 638.535 96.2476L665.586 94.5874V87.4585C665.586 77.0093 658.75 70.6616 646.445 70.6616C634.922 70.6616 627.891 76.0327 626.328 83.6499L626.133 84.5288H603.574L603.672 83.3569C605.137 64.9976 621.055 51.228 647.324 51.228C673.203 51.228 689.902 64.8999 689.902 85.7007V156.892H665.586V140.974H665C659.043 151.814 647.52 158.65 633.848 158.65ZM623.398 126.423C623.398 134.919 630.43 140.095 641.074 140.095C655.039 140.095 665.586 130.818 665.586 118.513V110.701L641.953 112.166C629.941 112.947 623.398 118.123 623.398 126.326V126.423Z"/><path d="M754.922 158.943C724.16 158.943 704.922 138.24 704.922 105.037V104.939C704.922 71.9312 724.453 51.228 754.629 51.228C781.875 51.228 798.867 68.5132 800.332 89.2163L800.43 89.9976H777.48L777.285 89.1187C775.234 79.0601 767.812 70.9546 754.922 70.9546C739.59 70.9546 729.727 83.9429 729.727 105.134V105.232C729.727 126.814 739.688 139.314 755.02 139.314C767.324 139.314 775.137 131.99 777.383 121.15L777.578 120.271H800.527L800.43 120.955C798.574 142.537 781.094 158.943 754.922 158.943Z"/><path d="M860.273 158.943C829.219 158.943 810.469 138.337 810.469 105.427V105.33C810.469 72.7124 829.512 51.228 859.102 51.228C888.691 51.228 907.051 72.0288 907.051 103.279V111.091H834.59C834.98 129.255 844.941 139.998 860.762 139.998C872.871 139.998 880.781 133.552 883.125 126.619L883.32 125.935H906.074L905.781 127.009C902.559 142.927 887.324 158.943 860.273 158.943ZM859.395 70.271C846.504 70.271 836.836 78.9624 834.883 94.8804H883.418C881.66 78.4741 872.285 70.271 859.395 70.271Z"/><path d="M962.891 158.943C935.742 158.943 920.215 146.052 918.066 126.814L917.969 125.935H941.895L942.09 126.814C943.945 135.701 950.684 140.974 962.988 140.974C974.805 140.974 981.934 136.189 981.934 128.572V128.474C981.934 122.224 978.32 118.708 967.578 116.267L950.391 112.458C930.566 108.064 920.605 98.396 920.605 83.064V82.9663C920.605 64.021 937.109 51.228 962.109 51.228C987.891 51.228 1002.93 65.3882 1003.81 83.2593L1003.91 84.3335H981.25L981.152 83.5522C980.078 75.2515 973.438 69.1968 962.109 69.1968C951.367 69.1968 944.629 74.1772 944.629 81.7944V81.8921C944.629 87.8491 948.633 91.7554 959.375 94.1968L976.66 98.0054C998.047 102.791 1006.35 111.189 1006.35 126.228V126.326C1006.35 145.857 988.281 158.943 962.891 158.943Z"/></svg></span>
+        <span class="brand-sep">/</span>
+        <a class="repo" href="__REPO_URL__">__PROJECT__</a>
+      </div>
       <div class="top-actions">
         <a href="about.html">Readme</a>
         <a href="architecture.html">Architecture</a>
@@ -353,7 +392,9 @@
     <aside class="toc" aria-label="On this page">
       <div class="toc-inner">
         <div class="toc-head">On this page</div>
-        <nav class="toc-list" id="toc-list"><span class="toc-thumb" aria-hidden="true"></span></nav>
+        <div class="toc-viewport" id="toc-viewport">
+          <nav class="toc-list" id="toc-list"><span class="toc-thumb" aria-hidden="true"></span></nav>
+        </div>
       </div>
     </aside>
 
@@ -363,9 +404,7 @@
         <button id="sort-toggle" class="sort" type="button" aria-pressed="true">Newest first <span class="arrow">↑</span></button>
       </div>
       <div class="entries">
-            <!-- ENTRIES:START -->
-      <!-- ↑↑↑ NEW ENTRIES GO IMMEDIATELY BELOW THIS MARKER (newest first) ↑↑↑ -->
-
+      <!-- ENTRIES:START -->
       <article class="entry">
         <div class="entry-head">
           <time datetime="__SEED_ISO__">__SEED_LABEL__</time>
@@ -376,22 +415,18 @@
         <div class="entry-body">
           <ul>
             <li>Tracks every feature + build-out here, newest first.</li>
-            <li>Hover a gap to condense; hover a post to delete it.</li>
+            <li>Click “Show details” to expand an entry; older days group under a header.</li>
             <li>Replace this seed with your first real entry.</li>
           </ul>
         </div>
         <div class="media"></div>
       </article>
-
       <!-- ENTRIES:END -->
-      </div>
+    </div>
+
     </main>
 
     <aside class="about">
-      <section class="about-sec">
-        <h2 class="about-title">About</h2>
-        <p class="about-desc">The progress log for <b>__PROJECT__</b> — every feature &amp; build-out, newest first. Replace this with a sentence about the project.</p>
-      </section>
       <section class="about-sec">
         <h2 class="about-title">Quick actions</h2>
         <button type="button" class="qa" id="qa-assets">
@@ -407,6 +442,16 @@
           Readme
         </a>
       </section>
+
+      <hr class="about-divider" />
+
+      <section class="about-sec">
+        <h2 class="about-title">About</h2>
+        <p class="about-desc">The progress log for <b>__PROJECT__</b> — every feature &amp; build-out, newest first. Replace this with a sentence about the project.</p>
+      </section>
+
+      <hr class="about-divider" />
+
       <section class="about-sec">
         <h2 class="about-title">Live preview</h2>
         <label class="foot-toggle" id="preview-toggle-wrap" title="When on, an agent hosts this page over a Cloudflare tunnel and posts a tappable link.">
@@ -461,6 +506,7 @@
         </div>
       </article>
   </template>
+
   <script>
     var REPO = "__REPO_URL__";
     var NEW_TTL = 2 * 60 * 60 * 1000; // a "new" untouched this long auto-reverts to "done"
@@ -524,6 +570,18 @@
     }
     paintTimes();
     setInterval(paintTimes, 60000);
+
+    // Enforce strict newest-first order at render time. Entries are prepended by
+    // many agents and interleaved by merges, so DOM order can drift out of
+    // chronological — sorting by timestamp keeps the feed correct and makes the
+    // day-group headers contiguous. (The sort toggle still flips via flexbox.)
+    (function () {
+      var list = document.querySelector(".entries"); if (!list) return;
+      function ts(e) { var t = e.querySelector("time[datetime]"); var d = t ? new Date(t.getAttribute("datetime")) : null; return d && !isNaN(d) ? d.getTime() : 0; }
+      Array.prototype.slice.call(list.querySelectorAll(":scope > .entry"))
+        .sort(function (a, b) { return ts(b) - ts(a); })
+        .forEach(function (e) { list.appendChild(e); });
+    })();
 
     // Newest-first toggle — flips render order via flexbox only.
     // Source order stays newest-first so agents always prepend at top.
@@ -751,34 +809,47 @@
       });
     })();
 
-    // Left TOC — scroll-spy with a sliding indicator; rebuilds as entries change.
+    // Left TOC — a fixed 8-item window the list ticks through (translateY) to
+    // keep the active item centered, plus a sliding indicator. Rebuilds as
+    // entries change.
     (function () {
       var list = document.querySelector(".entries");
       var toc = document.getElementById("toc-list");
-      var tocInner = document.querySelector(".toc-inner");
+      var viewport = document.getElementById("toc-viewport");
       if (!list || !toc) return;
       var thumb = toc.querySelector(".toc-thumb");
       var links = [], active = null, io = null;
+      var WINDOW = 8;   // items shown at once
+      var CENTER = 3;   // active sits ~here within the window
 
       function topEntries() {
         return Array.prototype.filter.call(list.querySelectorAll(":scope > .entry"), function (e) { return e.offsetParent !== null; });
       }
+      function itemH() { return (links.length && links[0].a.offsetHeight) || 28; }
+      function sizeViewport() {
+        if (viewport) viewport.style.height = (Math.min(links.length || 1, WINDOW) * itemH()) + "px";
+      }
+      function reposition(idx) {
+        if (links.length <= WINDOW) { toc.style.transform = "translateY(0)"; return; }
+        var maxStart = links.length - WINDOW;
+        var start = Math.min(Math.max(idx - CENTER, 0), maxStart);
+        toc.style.transform = "translateY(" + (-start * itemH()) + "px)";
+      }
       function spy() {
         if (!links.length) { thumb.style.opacity = "0"; return; }
-        var cur = links[0];
+        var idx = 0;
         for (var i = 0; i < links.length; i++) {
-          if (links[i].entry.getBoundingClientRect().top - 110 <= 0) cur = links[i]; else break;
+          if (links[i].entry.getBoundingClientRect().top - 110 <= 0) idx = i; else break;
         }
+        var cur = links[idx];
         thumb.style.opacity = "1";
         thumb.style.height = cur.a.offsetHeight + "px";
         thumb.style.transform = "translateY(" + cur.a.offsetTop + "px)";
         if (cur.a !== active) {
           if (active) active.classList.remove("active");
           active = cur.a; active.classList.add("active");
-          if (tocInner && tocInner.scrollHeight > tocInner.clientHeight + 4) {
-            tocInner.scrollTo({ top: active.offsetTop - tocInner.clientHeight / 2, behavior: "smooth" });
-          }
         }
+        reposition(idx);
       }
       var ticking = false;
       function schedule() { if (!ticking) { ticking = true; requestAnimationFrame(function () { ticking = false; spy(); }); } }
@@ -796,6 +867,7 @@
           toc.appendChild(a);
           return { a: a, entry: e };
         });
+        sizeViewport();
         // Drive the spy off an IntersectionObserver as well as scroll — IO fires
         // on ANY position change (incl. programmatic / momentum) where a raw
         // scroll event may be throttled, so the indicator never gets stuck.
@@ -805,7 +877,7 @@
         spy();
       }
       window.addEventListener("scroll", schedule, { passive: true });
-      window.addEventListener("resize", schedule);
+      window.addEventListener("resize", function () { sizeViewport(); schedule(); });
       var t; new MutationObserver(function () { clearTimeout(t); t = setTimeout(build, 90); }).observe(list, { childList: true });
       build();
     })();
@@ -835,6 +907,108 @@
       document.getElementById("assets-close").addEventListener("click", hide);
       overlay.addEventListener("click", function (e) { if (e.target === overlay) hide(); });
       document.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
+    })();
+
+    // Collapsible entry details — tuck bullets/media/branch into a chin behind a
+    // Show/Hide toggle. Open by default for new/wip work, collapsed for settled.
+    // Applied at render time; the authored entry markup is unchanged.
+    (function () {
+      var list = document.querySelector(".entries");
+      if (!list) return;
+      var CHEV = '<svg class="et-chev" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      function enhance(entry) {
+        if (entry.dataset.collapsible) return;
+        entry.dataset.collapsible = "1";
+        var head = entry.querySelector(".entry-head");
+        var body = entry.querySelector(".entry-body");
+        var media = entry.querySelector(".media");
+        var branch = head ? head.querySelector(".branch") : null;
+        var hasBody = body && body.textContent.trim();
+        var hasMedia = media && media.children.length;
+        if (!hasBody && !hasMedia && !branch) { if (media) media.remove(); return; }
+
+        var details = document.createElement("div"); details.className = "entry-details";
+        var inner = document.createElement("div"); inner.className = "entry-details-inner";
+        if (hasMedia) inner.appendChild(media); else if (media) media.remove();
+        if (hasBody) inner.appendChild(body);
+        if (branch) {
+          var meta = document.createElement("div"); meta.className = "entry-meta";
+          meta.appendChild(branch);
+          inner.appendChild(meta);
+        }
+        details.appendChild(inner);
+        entry.appendChild(details);
+
+        var btn = document.createElement("button");
+        btn.type = "button"; btn.className = "entry-toggle"; btn.setAttribute("aria-expanded", "false");
+        var lab = document.createElement("span"); lab.className = "et-label"; lab.textContent = "Show details";
+        btn.appendChild(lab); btn.insertAdjacentHTML("beforeend", CHEV);
+        entry.appendChild(btn);
+
+        function set(open) {
+          entry.classList.toggle("open", open);
+          btn.setAttribute("aria-expanded", String(open));
+          lab.textContent = open ? "Hide details" : "Show details";
+        }
+        btn.addEventListener("click", function () { set(!entry.classList.contains("open")); });
+
+        var st = entry.querySelector(".status");
+        var s = st && st.getAttribute("data-status");
+        set(s === "new" || s === "wip");
+      }
+      function run() { Array.prototype.forEach.call(list.querySelectorAll(":scope > .entry"), enhance); }
+      run();
+      new MutationObserver(run).observe(list, { childList: true });
+    })();
+
+    // Day separators — a tiny centered label between date groups. Today gets no
+    // header; older groups get "Yesterday" / weekday / date. Recomputes on
+    // mutation and on sort toggle; coexists with condense + per-post delete.
+    (function () {
+      var list = document.querySelector(".entries");
+      if (!list) return;
+      function ymd(d) { return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate(); }
+      function label(d) {
+        var now = new Date();
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        var diff = Math.round((today - day) / 86400000);
+        if (diff <= 0) return null;                 // today / future → no header
+        if (diff === 1) return "Yesterday";
+        if (diff < 7) return d.toLocaleDateString(undefined, { weekday: "long" });
+        if (d.getFullYear() === now.getFullYear()) return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+        return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+      }
+      var mo, t;
+      function run() {
+        if (mo) mo.disconnect();
+        Array.prototype.slice.call(list.querySelectorAll(":scope > .day-sep")).forEach(function (s) { s.remove(); });
+        var entries = Array.prototype.filter.call(list.querySelectorAll(":scope > .entry"), function (e) { return e.style.display !== "none"; });
+        var reversed = list.classList.contains("reverse");
+        var seq = reversed ? entries.slice().reverse() : entries;   // current visual order
+        var lastKey = null;
+        seq.forEach(function (e) {
+          var tEl = e.querySelector("time[datetime]"); if (!tEl) return;
+          var d = new Date(tEl.getAttribute("datetime")); if (isNaN(d)) return;
+          var k = ymd(d);
+          if (k !== lastKey) {
+            lastKey = k;
+            var lab = label(d);
+            if (lab) {
+              var sep = document.createElement("div"); sep.className = "day-sep"; sep.textContent = lab;
+              if (reversed) e.parentNode.insertBefore(sep, e.nextSibling);   // appears above e once reversed
+              else e.parentNode.insertBefore(sep, e);
+            }
+          }
+        });
+        if (mo) mo.observe(list, { childList: true });
+      }
+      function schedule() { clearTimeout(t); t = setTimeout(run, 50); }
+      mo = new MutationObserver(schedule);
+      run();
+      var sortBtn = document.getElementById("sort-toggle");
+      if (sortBtn) sortBtn.addEventListener("click", function () { setTimeout(run, 0); });
     })();
   </script>
 </body>

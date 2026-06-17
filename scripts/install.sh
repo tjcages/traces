@@ -36,6 +36,8 @@ cp "$SKILL_DIR/templates/about.html" "$ROOT/progress/"
 cp "$SKILL_DIR/templates/README.md" "$ROOT/progress/"
 [ -f "$ROOT/progress/preview.json" ]          || cp "$SKILL_DIR/templates/preview.json" "$ROOT/progress/"
 [ -f "$ROOT/progress/architectures.data.js" ] || cp "$SKILL_DIR/templates/architectures.data.js" "$ROOT/progress/"
+# stack.html is repo-specific (deps differ per repo) → seed if absent; agent fills it in.
+[ -f "$ROOT/progress/stack.html" ]            || cp "$SKILL_DIR/templates/stack.html" "$ROOT/progress/"
 
 # --- index.html: only scaffold if missing (preserve real entries) ---
 if [ ! -f "$ROOT/progress/index.html" ]; then
@@ -47,11 +49,11 @@ if [ ! -f "$ROOT/progress/index.html" ]; then
   sed -e "s#__REPO_URL__#${REPO_URL}#g" -e "s#__PROJECT__#${PROJECT}#g" \
       -e "s#__BRANCH__#${BRANCH}#g" -e "s#__SEED_ISO__#${ISO}#g" -e "s#__SEED_LABEL__#${LABEL}#g" \
       "$SKILL_DIR/templates/index.html" > "$ROOT/progress/index.html"
-  # propagate REPO/PROJECT into the architecture renderer too
-  sed -i.bak -e "s#__PROJECT__#${PROJECT}#g" "$ROOT/progress/architecture.html" && rm -f "$ROOT/progress/architecture.html.bak"
+  # propagate REPO/PROJECT into the architecture renderer + tech-stack page too
+  sed -i.bak -e "s#__PROJECT__#${PROJECT}#g" "$ROOT/progress/architecture.html" "$ROOT/progress/stack.html" && rm -f "$ROOT/progress/architecture.html.bak" "$ROOT/progress/stack.html.bak"
   echo "scaffolded progress/index.html (project=$PROJECT, repo=$REPO_URL)"
 else
-  sed -i.bak -e "s#__PROJECT__#$(basename "$ROOT")#g" "$ROOT/progress/architecture.html" && rm -f "$ROOT/progress/architecture.html.bak"
+  sed -i.bak -e "s#__PROJECT__#$(basename "$ROOT")#g" "$ROOT/progress/architecture.html" "$ROOT/progress/stack.html" && rm -f "$ROOT/progress/architecture.html.bak" "$ROOT/progress/stack.html.bak"
   echo "kept existing progress/index.html (entries preserved)"
 fi
 

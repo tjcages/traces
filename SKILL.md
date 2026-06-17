@@ -4,7 +4,8 @@ description: >-
   Install and maintain a self-contained, user-facing PROGRESS LOG for a repo
   (progress/index.html — timestamped entries, status pills, condense + per-post
   delete, optional Cloudflare-tunnel live preview) plus a living Architecture
-  tab. Use whenever: scaffolding a progress log / project changelog page; the
+  tab and a Tech-stack tab (languages / frameworks / libraries / tools). Use
+  whenever: scaffolding a progress log / project changelog page; the
   user types /progress or /changelog; you finish or ship a feature, fix, or
   notable change in a repo that has (or should have) a progress/ log — record it
   even if not explicitly asked; updating, editing, or condensing log entries;
@@ -56,6 +57,11 @@ Full rules live in the scaffolded **`progress/README.md`** — read it. The esse
   `new` = "done + look now"; it auto-ages to `done` (~2h) and you demote stale ones (≈one at a time).
 - **Maintain the Architecture tab** — edit `progress/architectures.data.js` when the system's
   shape changes (it's repo-agnostic data; the renderer is reused unchanged).
+- **Maintain the Tech-stack tab** — `progress/stack.html` is a plain-English "what is this
+  repo built on" page (GitHub-style language bar + cards of languages, frameworks, libraries,
+  tools, by area). On first install it's a placeholder: **fill it from the repo's manifests**
+  (package.json, go.mod, Cargo.toml, Package.swift, requirements.txt…) and the language byte
+  share. Keep it current when a dep/tool/binding is added, removed, or major-version-bumped.
 - **One image per task** — overwrite the same media file as you iterate; capture at a real
   viewport: `node scripts/progress-shot.mjs <url> progress/media/<name>.png 375 760 mobile`
   (or `760 430 desktop`). Live server: `python3 -m http.server -d progress`.
@@ -75,7 +81,7 @@ changes when the tunnel restarts).
 - `templates/` — `index.html` (the log engine: relative times, branch→GitHub badges,
   condense tray, per-post delete, status aging, live-preview toggle), `architecture.html`
   (repo-agnostic React-Flow renderer) + `architectures.data.js` (seed), `about.html` (the
-  in-page readme), `README.md` (full protocol), `preview.json`, `claude-block.md` (the
-  injected rule).
+  in-page readme), `stack.html` (the tech-stack page — seeded as a fill-in placeholder),
+  `README.md` (full protocol), `preview.json`, `claude-block.md` (the injected rule).
 - `scripts/` — `install.sh`, `progress-server.py` (serves + accepts the toggle's write),
   `progress-tunnel.sh`, `progress-shot.mjs` (real-viewport screenshots), `progress-standalone.mjs`.
