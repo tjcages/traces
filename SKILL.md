@@ -72,7 +72,7 @@ Full rules live in the scaffolded **`progress/README.md`** — read it. The esse
 Default is local-only — just edit the files. Flip `progress/preview.json` `"tunnel": true`
 (or tick the page's footer toggle, or the user asks) and the agent runs
 `scripts/progress-tunnel.sh`, then posts the link at the bottom of the reply. The link **must
-be a clickable markdown hyperlink, exactly `[Open the progress log →](URL)`** — never a bare
+be a clickable markdown hyperlink, exactly `[Open Traces](URL)`** — never a bare
 URL, no emoji — and `URL` is read **fresh** from `/tmp/progress-tunnel-url.txt` every time (it
 changes when the tunnel restarts).
 

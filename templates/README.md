@@ -162,7 +162,7 @@ gated by `progress/preview.json`:
 
 - `"tunnel": false` (default) → local only.
 - `"tunnel": true` (or you ask "turn live preview on") → the agent runs the tunnel and posts
-  a clickable **Open the progress log** link.
+  a clickable **Open Traces** link.
 
 ```bash
 bash scripts/progress-tunnel.sh     # → prints https://<random>.trycloudflare.com
@@ -171,7 +171,7 @@ bash scripts/progress-tunnel.sh     # → prints https://<random>.trycloudflare.
 
 That URL always shows the current `progress/index.html`, served live off disk. **When live
 preview is on, make sure the tunnel is up and put the link at the BOTTOM of your reply as a
-clickable markdown hyperlink — exactly `[Open the progress log →](URL)`, NEVER a bare/pasted
+clickable markdown hyperlink — exactly `[Open Traces](URL)`, NEVER a bare/pasted
 URL and no emoji.** Read `URL` **fresh** from `/tmp/progress-tunnel-url.txt` every time — it
 changes whenever the tunnel restarts, so never reuse a URL you remember. (A one-tap in-page
 toggle would need a tiny backend — the page is static — so the flag + agent is the control.)

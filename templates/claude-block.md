@@ -25,7 +25,7 @@ changed. Protocol: **`progress/README.md`** (read it once).
 - **Live preview is OPT-IN:** only when `progress/preview.json` has `"tunnel": true` (or the
   user asks) do you run `scripts/progress-tunnel.sh` and put a link at the BOTTOM of your
   reply; otherwise just edit the local files — no link. **The link MUST be a clickable
-  markdown hyperlink, exactly `[Open the progress log →](URL)` — NEVER a bare/pasted URL and
+  markdown hyperlink, exactly `[Open Traces](URL)` — NEVER a bare/pasted URL and
   no emoji.** Read `URL` **fresh** from `/tmp/progress-tunnel-url.txt` each time (it changes
   when the tunnel restarts — never reuse a remembered one).
 <!-- PROGRESS-LOG:END -->
