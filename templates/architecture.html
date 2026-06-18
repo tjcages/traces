@@ -29,12 +29,13 @@
 <link rel="stylesheet" href="https://esm.sh/@xyflow/react@12.3.5/dist/style.css" />
 <style>
   :root {
-    --bg: #f7f7f9;
-    --primary: #ffffff;
+    --bg: #ffffff;
+    --primary: #fbfbfb;
+    --secondary: #f7f7f7;
     --fg: #1d1d1f;
     --fg-2: #6e6e73;
     --fg-3: #a1a1a6;
-    --accent: #28a745;
+    --accent: #2e9c52;
     --t-meta: 12px;
     --t-body: 14px;
     --t-title: 15px;
@@ -55,10 +56,11 @@
     :root {
       --bg: #1c1c1e;
       --primary: #2c2c2e;
+      --secondary: #3a3a3c;
       --fg: #f5f5f7;
       --fg-2: #98989d;
       --fg-3: #636366;
-      --accent: #30d158;
+      --accent: #4ab96b;
       --line: #3a3a3e;
       --line-strong: #4c4c52;
       --chip: #3a3a3e;
@@ -80,17 +82,10 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ── Masthead — full-bleed so chrome aligns to one 16px frame ── */
-  .masthead {
-    background: color-mix(in srgb, var(--bg) 80%, transparent);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    z-index: 10;
-  }
-  .masthead-inner {
-    padding: 14px 16px;
-    display: flex; flex-wrap: wrap; align-items: center; gap: 8px; row-gap: 12px;
-  }
+  /* ── Header — the same flat, transparent shell as the Trace page ── */
+  .topbar { position: sticky; top: 0; z-index: 20; background: transparent; pointer-events: none; }
+  .topbar a, .topbar button { pointer-events: auto; }
+  .topbar-inner { max-width: 1380px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 12px; }
   .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
   .brand-logo { display: inline-flex; }
   .brand-logo svg { height: 16px; width: auto; display: block; }
@@ -98,33 +93,43 @@
   .brand-sep { color: var(--fg-3); font-size: var(--t-title); font-weight: 300; }
   .repo { font-size: var(--t-title); font-weight: 600; color: var(--fg-2); text-decoration: none; letter-spacing: -0.01em; }
   .repo:hover { color: var(--fg); }
-  .top-actions { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-  .top-actions a { font-size: var(--t-meta); color: var(--fg-2); text-decoration: none; padding: 5px 11px; border-radius: 100px; border: 1px solid var(--line); transition: background .15s ease, color .15s ease; }
-  .top-actions a:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 4%, transparent); }
-  .top-actions a.active { color: var(--fg); font-weight: 600; background: color-mix(in srgb, var(--fg) 7%, transparent); border-color: color-mix(in srgb, var(--fg) 14%, transparent); }
+  /* Top-right: just a ghost GitHub button (page nav lives in the tabs below). */
+  .top-actions { margin-left: auto; display: flex; gap: 6px; }
+  .top-actions a { display: inline-flex; align-items: center; gap: 7px; font-size: var(--t-meta); color: var(--fg-2); text-decoration: none; padding: 5px 10px; border-radius: 100px; transition: background .15s ease, color .15s ease; }
+  .top-actions a:hover { color: var(--fg); background: var(--secondary); }
+  .top-actions a:active { transform: scale(0.98); }
+  .gh-link svg { width: 15px; height: 15px; fill: currentColor; display: block; }
+
+  /* ── Page — same max width as the Trace page's three columns combined ── */
+  .page { max-width: 1380px; margin: 0 auto; padding: 6px 24px 28px; }
+  .arch-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-bottom: 10px; }
+  .arch-title { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin: 0 4px 0 0; }
 
   /* ── Buildout switcher — quiet text; selected = white pill ── */
-  .arch-bar {
-    padding: 4px 16px 8px;
-    display: flex; flex-wrap: wrap; align-items: center; gap: 2px;
-  }
+  .arch-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; }
   .arch-tab {
     font-family: var(--sans); font-size: var(--t-meta); border: 0; cursor: pointer;
     color: var(--fg-2); background: transparent; border-radius: 100px; padding: 6px 13px;
   }
   .arch-tab:hover { color: var(--fg); }
-  .arch-tab.active { color: var(--fg); font-weight: 600; background: var(--primary); box-shadow: var(--node-shadow); }
+  .arch-tab.active { color: var(--fg); font-weight: 600; background: var(--secondary); }
   .arch-meta {
-    padding: 0 16px 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
+    margin-bottom: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
   }
   .arch-desc { font-size: var(--t-meta); color: var(--fg-3); }
   .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-left: auto; }
   .legend span { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; letter-spacing: 0.02em; color: var(--fg-3); }
   .legend i { width: 7px; height: 7px; border-radius: 50%; }
 
-  /* Explicit height with a floor — never depends on a viewport-height
-     flex chain (embedders can report zero innerHeight). */
-  .canvas-wrap { height: calc(100vh - 158px); min-height: 660px; position: relative; }
+  /* ── Canvas — the architecture lives inside one bordered surface that
+     matches the page width. Explicit height with a floor so it never
+     depends on a viewport-height flex chain. ── */
+  .canvas {
+    position: relative;
+    height: calc(100vh - 188px); min-height: 560px;
+    border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+    background: var(--bg);
+  }
 
   /* ── Groups — outline only, content-fit; label + count chip ── */
   .lane {
@@ -234,22 +239,18 @@
 </style>
 </head>
 <body>
-  <div class="masthead">
-    <div class="masthead-inner">
+  <header class="topbar">
+    <div class="topbar-inner">
       <div class="brand">
         <span class="brand-logo" title="Traces" aria-label="Traces"><svg viewBox="0 0 869 172" fill="none" xmlns="http://www.w3.org/2000/svg" role="img"><path d="M202.902 105.516C209.134 103.854 215.904 108.839 216.457 115.206C216.564 116.426 216.557 117.723 216.57 118.951C217.438 120.015 219.223 121.61 220.285 122.622L234.688 136.326C235.968 137.553 238.562 140.307 240.02 140.952C244.013 139.882 247.122 139.482 251.126 140.934C255.155 142.385 258.426 145.418 260.188 149.338C261.95 153.279 262.071 157.763 260.523 161.792C258.803 166.274 255.687 169.066 251.412 170.958C247.521 172.189 244.242 172.492 240.314 170.972C236.291 169.416 233.055 166.307 231.327 162.337C229.237 157.545 229.741 153.422 231.59 148.728C230.724 147.501 210.705 128.024 209.954 127.737C207.673 126.868 204.34 128.755 200.562 126.744C197.826 125.289 195.668 122.845 194.786 119.84C193.903 116.837 194.316 113.689 195.809 110.962C197.382 108.085 199.812 106.415 202.902 105.516Z" fill="black"/><path d="M222.925 59.4691C228.85 58.7293 232.304 61.6869 236.079 65.8025C240.336 70.4451 245.202 74.4856 249.461 79.1417C252.003 81.9216 253.692 83.2705 254.464 87.1389C255.104 90.3621 254.425 93.7091 252.577 96.4256C250.468 99.5431 247.67 101.129 244.049 101.802C237.243 102.516 234.729 99.5431 230.366 95.0469L224.027 88.549L218.535 83.0232C217.307 81.7935 215.408 80.0927 214.497 78.6717C209.376 70.6868 213.815 61.2191 222.925 59.4691Z" fill="black"/><path d="M184.541 130.843C190.11 130.117 195.435 134.924 196.147 140.353C196.993 146.804 193.052 150.101 188.881 154.17C185.173 157.787 181.628 161.543 177.751 164.992C174.098 168.258 173.208 170.426 168.086 171.137C162.241 171.656 157.367 167.378 156.47 161.687C155.218 153.758 163.078 149.164 167.656 144.075C171.04 140.313 174.478 136.243 178.411 133.06C179.862 131.887 182.721 131.084 184.541 130.843Z" fill="black"/><path d="M236.134 0.0296447C244.786 -0.497787 252.24 6.07538 252.82 14.7448C253.402 23.4141 246.891 30.9276 238.247 31.5647C229.526 32.2076 221.948 25.6102 221.361 16.8628C220.776 8.11563 227.405 0.561793 236.134 0.0296447Z" fill="black"/><path d="M169.72 69.0522C171.688 68.9714 174.061 69.2857 175.648 70.4729C179.051 73.0195 182.126 76.6999 185.04 79.6705C187.335 81.9882 189.616 84.3174 191.887 86.6582C194.249 89.0972 196.714 91.1198 197.415 94.591C197.917 97.0465 197.409 99.6012 196.009 101.676C194.312 104.184 192.235 105.111 189.402 105.679C184.563 105.91 182.727 103.756 179.49 100.637C176.954 98.1564 174.443 95.6521 171.958 93.1226C169.02 90.1593 165.431 86.7942 162.852 83.5546C162.183 82.7152 161.623 80.763 161.469 79.6406C161.141 77.253 161.794 74.8342 163.281 72.9392C164.962 70.7578 166.972 69.4146 169.72 69.0522Z" fill="black"/><path d="M141.256 94.6712C143.378 94.4951 145.774 95.377 147.516 96.5514C149.808 98.0967 163.605 112.392 165.448 115.028C166.183 116.07 166.674 117.267 166.883 118.526C167.791 123.734 163.828 127.908 158.93 128.762C153.755 128.843 152.205 126.515 148.791 123.181C144.201 118.697 138.805 113.751 134.68 108.886C132.381 106.172 132.588 101.024 134.765 98.3467C136.609 96.0782 138.337 95.1475 141.256 94.6712Z" fill="black"/><path d="M215.361 27.3945C217.088 27.1634 218.728 27.2462 220.331 28.011C222.255 28.9521 223.709 30.6454 224.352 32.6936C224.855 34.3009 224.794 37.8683 223.663 39.3064C219.575 44.3844 214.657 49.077 209.905 53.5578C206.395 56.8687 204.276 60.3771 199.504 61.7094C191.167 62.8641 187.614 53.8005 192.731 48.0641C197.762 42.4702 203.166 37.2316 208.437 31.8711C210.984 29.2794 211.837 28.377 215.361 27.3945Z" fill="black"/><path d="M149.792 42.8519C156.899 42.311 163.103 47.6347 163.666 54.7568C164.229 61.8791 158.94 68.116 151.835 68.7041C144.7 69.2949 138.442 63.9616 137.876 56.806C137.31 49.6504 142.652 43.3956 149.792 42.8519Z" fill="black"/><path d="M106.682 102.382C109.334 102.074 111.403 102.631 113.382 104.462C117.361 107.96 116.88 113.248 113.312 116.441C109.321 120.015 106.579 118.397 102.494 117.226C101.894 117.054 99.6964 119.241 99.0379 119.912C98.0689 120.901 96.7512 122.307 95.7063 123.462L95.8005 123.761C97.6305 129.568 95.626 134.064 89.5402 135.773C85.4298 136.081 81.4346 134.567 80.045 130.296C79.3018 128.062 79.5071 125.621 80.6132 123.542C81.7348 121.426 83.7169 119.949 86.0006 119.307C88.9309 118.485 91.057 119.356 93.5492 120.752C95.0069 119.686 99.2184 115.322 100.441 113.926C98.9959 108.49 100.957 103.81 106.682 102.382Z" fill="black"/><path d="M131.396 68.4057C132.892 68.204 134.414 68.4845 135.74 69.2066C137.349 70.1094 138.529 71.6242 139.01 73.4092C139.434 74.9802 139.303 77.7071 138.356 79.0699C135.612 82.7684 131.936 86.0344 128.657 89.3194C125.77 92.2125 123.49 95.4305 119.422 96.369C115.564 96.5514 112.389 94.8363 111.491 90.8542C110.314 85.6299 115.078 83.0317 118.072 79.7613C120.298 77.3314 122.543 74.9078 124.889 72.5914C127.107 70.388 128.197 69.0669 131.396 68.4057Z" fill="black"/><path d="M65.9218 98.1078C70.6948 97.8782 73.2372 102.544 76.3854 105.38C80.5057 109.09 80.5783 114.927 74.557 116.573C73.5343 116.665 72.6287 116.573 71.6935 116.125C69.2393 114.949 62.1751 107.798 61.3613 105.13C60.9335 103.728 61.1171 102.109 61.8682 100.846C62.7648 99.3387 64.2933 98.5574 65.9218 98.1078Z" fill="black"/><path d="M53.1071 84.1381C54.0766 84.1823 54.9501 84.3752 55.7863 84.8954C56.9107 85.5814 57.6886 86.7171 57.9232 88.0155C58.5872 91.6732 55.0829 93.9339 52.877 96.2605C51.2361 97.9898 49.4471 99.4204 47.0834 99.8716C40.7537 99.4864 40.7247 93.6525 44.8864 90.1326C47.7872 87.6781 48.9609 84.7314 53.1071 84.1381Z" fill="black"/><path d="M46.0213 120.263C47.1974 120.192 47.5719 120.213 48.6825 120.667C51.0145 121.62 56.4854 127.278 57.1706 129.466C57.5525 130.692 57.4402 132.019 56.8576 133.163C56.1123 134.597 54.8743 135.221 53.4225 135.674C51.0964 135.85 49.3973 134.91 47.8603 133.192C45.288 130.313 40.3102 127.268 42.5139 122.767C43.1837 121.4 44.6231 120.651 46.0213 120.263Z" fill="black"/><path d="M28.5285 103.791C31.4627 103.709 32.2313 105.13 34.1806 106.937C37.396 109.916 37.9973 114.479 32.9657 115.825C30.0398 115.845 28.6045 113.833 26.7174 111.942C23.8988 109.114 24.2695 104.787 28.5285 103.791Z" fill="black"/><path d="M333.762 159.636V39.9099H291.574V18.7184H400.949V39.9099H358.859V159.636H333.762Z" fill="black"/><path d="M398.879 159.636V56.1208H423.195V73.9919H423.684C426.906 61.4919 435.5 53.9724 447.414 53.9724C450.441 53.9724 453.274 54.4606 455.129 54.9489V76.9216C453.078 76.1403 449.367 75.5544 445.266 75.5544C431.496 75.5544 423.195 84.2458 423.195 99.5778V159.636H398.879Z" fill="black"/><path d="M495.734 161.394C475.031 161.394 461.066 148.601 461.066 130.144V129.949C461.066 111.59 475.324 100.554 500.422 98.9919L527.473 97.3317V90.2028C527.473 79.7536 520.637 73.4059 508.332 73.4059C496.809 73.4059 489.777 78.777 488.215 86.3942L488.02 87.2731H465.461L465.559 86.1013C467.024 67.7419 482.941 53.9724 509.211 53.9724C535.09 53.9724 551.79 67.6442 551.79 88.445V159.636H527.473V143.718H526.887C520.93 154.558 509.406 161.394 495.734 161.394ZM485.285 129.168C485.285 137.664 492.316 142.84 502.961 142.84C516.926 142.84 527.473 133.562 527.473 121.258V113.445L503.84 114.91C491.828 115.691 485.285 120.867 485.285 129.07V129.168Z" fill="black"/><path d="M616.809 161.687C586.047 161.687 566.809 140.984 566.809 107.781V107.683C566.809 74.6755 586.34 53.9724 616.516 53.9724C643.762 53.9724 660.754 71.2575 662.219 91.9606L662.317 92.7419H639.368L639.172 91.863C637.122 81.8044 629.7 73.6989 616.809 73.6989C601.477 73.6989 591.614 86.6872 591.614 107.879V107.976C591.614 129.558 601.575 142.058 616.907 142.058C629.212 142.058 637.024 134.734 639.27 123.894L639.465 123.015H662.415L662.317 123.699C660.462 145.281 642.981 161.687 616.809 161.687Z" fill="black"/><path d="M722.161 161.687C691.106 161.687 672.356 141.082 672.356 108.172V108.074C672.356 75.4567 691.399 53.9724 720.989 53.9724C750.579 53.9724 768.938 74.7731 768.938 106.023V113.836H696.477C696.868 132 706.829 142.742 722.649 142.742C734.758 142.742 742.669 136.297 745.012 129.363L745.208 128.679H767.962L767.669 129.754C764.446 145.672 749.212 161.687 722.161 161.687ZM721.282 73.0153C708.391 73.0153 698.723 81.7067 696.77 97.6247H745.305C743.547 81.2184 734.172 73.0153 721.282 73.0153Z" fill="black"/><path d="M824.778 161.687C797.629 161.687 782.102 148.797 779.954 129.558L779.856 128.679H803.782L803.977 129.558C805.833 138.445 812.571 143.718 824.876 143.718C836.692 143.718 843.821 138.933 843.821 131.316V131.218C843.821 124.968 840.208 121.453 829.465 119.011L812.278 115.203C792.454 110.808 782.493 101.14 782.493 85.8083V85.7106C782.493 66.7653 798.997 53.9724 823.997 53.9724C849.778 53.9724 864.817 68.1325 865.696 86.0036L865.794 87.0778H843.137L843.04 86.2966C841.965 77.9958 835.325 71.9411 823.997 71.9411C813.254 71.9411 806.516 76.9216 806.516 84.5388V84.6364C806.516 90.5934 810.52 94.4997 821.262 96.9411L838.547 100.75C859.934 105.535 868.235 113.933 868.235 128.972V129.07C868.235 148.601 850.169 161.687 824.778 161.687Z" fill="black"/><path d="M13.5443 122.676C16.3056 122.384 18.7864 124.373 19.1029 127.134C19.4195 129.895 17.4535 132.394 14.6979 132.737C11.9072 133.082 9.37024 131.084 9.04959 128.289C8.72911 125.494 10.748 122.973 13.5443 122.676Z" fill="black"/><path d="M15.6455 86.6582C17.2661 86.4271 18.8857 87.0863 19.8846 88.3842C20.8835 89.6819 21.1072 91.4171 20.4702 92.926C19.8331 94.4349 18.4339 95.4841 16.8077 95.6721C14.3395 95.9574 12.1001 94.2049 11.7822 91.7389C11.4642 89.273 13.1856 87.0091 15.6455 86.6582Z" fill="black"/><path d="M3.15313 105.149C5.35665 104.633 7.5587 106.01 8.06139 108.218C8.56425 110.426 7.1758 112.622 4.96662 113.114C2.77494 113.6 0.601693 112.223 0.102875 110.033C-0.395927 107.843 0.966966 105.66 3.15313 105.149Z" fill="black"/></svg></span>
         <span class="brand-sep">/</span>
         <a class="repo" href="__REPO_URL__">__PROJECT__</a>
       </div>
-      <nav class="top-actions">
-        <a href="index.html">Trace</a>
-        <a href="architecture.html" class="active" aria-current="page">Architecture</a>
-        <a href="stack.html">Tech stack</a>
-        <a href="about.html">Readme</a>
-        <a href="__REPO_URL__">GitHub ↗</a>
-      </nav>
+      <div class="top-actions">
+        <a class="gh-link" href="__REPO_URL__" aria-label="View on GitHub"><svg viewBox="0 0 98 96" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M41.4395 69.3848C28.8066 67.8535 19.9062 58.7617 19.9062 46.9902C19.9062 42.2051 21.6289 37.0371 24.5 33.5918C23.2559 30.4336 23.4473 23.7344 24.8828 20.959C28.7109 20.4805 33.8789 22.4902 36.9414 25.2656C40.5781 24.1172 44.4062 23.543 49.0957 23.543C53.7852 23.543 57.6133 24.1172 61.0586 25.1699C64.0254 22.4902 69.2891 20.4805 73.1172 20.959C74.457 23.543 74.6484 30.2422 73.4043 33.4961C76.4668 37.1328 78.0937 42.0137 78.0937 46.9902C78.0937 58.7617 69.1934 67.6621 56.3691 69.2891C59.623 71.3945 61.8242 75.9883 61.8242 81.252L61.8242 91.2051C61.8242 94.0762 64.2168 95.7031 67.0879 94.5547C84.4102 87.9512 98 70.6289 98 49.1914C98 22.1074 75.9883 6.69539e-07 48.9043 4.309e-07C21.8203 1.92261e-07 -1.9479e-07 22.1074 -4.3343e-07 49.1914C-6.20631e-07 70.4375 13.4941 88.0469 31.6777 94.6504C34.2617 95.6074 36.75 93.8848 36.75 91.3008L36.75 83.6445C35.4102 84.2188 33.6875 84.6016 32.1562 84.6016C25.8398 84.6016 22.1074 81.1563 19.4277 74.7441C18.375 72.1602 17.2266 70.6289 15.0254 70.3418C13.877 70.2461 13.4941 69.7676 13.4941 69.1934C13.4941 68.0449 15.4082 67.1836 17.3223 67.1836C20.0977 67.1836 22.4902 68.9063 24.9785 72.4473C26.8926 75.2227 28.9023 76.4668 31.2949 76.4668C33.6875 76.4668 35.2187 75.6055 37.4199 73.4043C39.0469 71.7773 40.291 70.3418 41.4395 69.3848Z" fill="currentColor"/></svg>GitHub</a>
+      </div>
     </div>
-  </div>
+  </header>
 
   <div id="root"></div>
 
@@ -422,11 +423,15 @@
       }, []);
 
       return h`
-        <div class="arch-bar" role="tablist">
-          ${ARCHITECTURES.map((a, i) => h`
-            <button key=${a.name} role="tab" aria-selected=${i === active}
-              class="arch-tab ${i === active ? "active" : ""}"
-              onClick=${() => pick(i)}>${a.name}</button>`)}
+        <div class="page">
+        <div class="arch-head">
+          <h1 class="arch-title">Architecture</h1>
+          <div class="arch-bar" role="tablist">
+            ${ARCHITECTURES.map((a, i) => h`
+              <button key=${a.name} role="tab" aria-selected=${i === active}
+                class="arch-tab ${i === active ? "active" : ""}"
+                onClick=${() => pick(i)}>${a.name}</button>`)}
+          </div>
         </div>
         <div class="arch-meta">
           <span class="arch-desc">${buildout.description}</span>
@@ -434,7 +439,7 @@
             ${usedKinds.map((k) => h`<span key=${k}><i style=${{ background: `var(--k-${k})` }}></i>${k}</span>`)}
           </span>
         </div>
-        <div class="canvas-wrap">
+        <div class="canvas">
           <${ReactFlowProvider}>
             <${ReactFlow}
               key=${`${buildout.name}:${nonce}`}
@@ -462,6 +467,7 @@
               Reset layout
             </button>` : null}
           <div class="hint">drag to pan · pinch or ⌘-scroll to zoom · click a node</div>
+        </div>
         </div>`;
     }
 
