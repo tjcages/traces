@@ -264,6 +264,9 @@
 
   /* ── Mobile — narrow phones: tighten spacing, edge-safe ── */
   @media (max-width: 560px) {
+    /* Narrow the preview so the title + toggle keep enough room (one line). */
+    .entry.has-thumb:not(.open) { grid-template-columns: minmax(0, 1fr) 176px; column-gap: 12px; }
+    .entry.has-thumb:not(.open) > .entry-thumb img { width: 128px; }
     .entries { margin-top: 12px; }
     .entry { padding: 15px 16px; }
     .entry-head .status { margin-left: 0; } /* flow left-to-right, wrap naturally */
@@ -421,7 +424,7 @@
   /* Toolbar row holds the Show/Hide toggle + a "has image" indicator. */
   .entry-toolbar { order: 2; margin: 4px 0 0; display: flex; align-items: center; gap: 8px; }
   .entry-toggle {
-    margin-left: -3px;
+    margin-left: -3px; white-space: nowrap;
     display: inline-flex; align-items: center; gap: 5px;
     font-family: var(--sans); font-size: var(--t-meta); font-weight: 600;
     color: var(--fg-3); background: transparent; border: 0; border-radius: var(--r-code);
@@ -451,7 +454,7 @@
      never resizes through the open/close animation. */
   .entry-thumb { display: none; }
   .entry.has-thumb:not(.open) {
-    display: grid; grid-template-columns: minmax(0, 1fr) 184px;
+    display: grid; grid-template-columns: minmax(0, 1fr) 232px;   /* 184px image + 48px right gap */
     grid-template-rows: auto auto; column-gap: 16px; align-items: start;
     overflow: hidden;   /* clip the image at the card's bottom edge */
   }
@@ -462,8 +465,8 @@
     position: relative; min-height: 0;
   }
   .entry.has-thumb:not(.open) > .entry-thumb img {
-    position: absolute; top: 24px; left: 0; width: 100%;
-    height: calc(100% - 24px + var(--pad-card));   /* below the status → down to the card's bottom edge */
+    position: absolute; top: 0; left: 0; width: 184px;   /* held 48px in from the right so it clears the status */
+    height: calc((100% + var(--pad-card)) / 0.7);        /* reaches the top; 70% shows, bottom 30% clipped at the card edge */
     object-fit: cover; object-position: top; display: block;
     border: 0.5px solid color-mix(in srgb, var(--fg) 5%, transparent); border-bottom: 0;
     border-radius: 5px 5px 0 0; background: var(--secondary);
