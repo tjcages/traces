@@ -183,7 +183,7 @@
   .media:empty { display: none; }
   .media figure { margin: 0; }
   .media img, .media video {
-    width: 100%; height: auto; display: block;
+    width: 100%; height: auto; display: block; cursor: default;
     background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-img);
   }
   /* Loading placeholder — a light-grey box that gently pulses until the image
@@ -290,8 +290,9 @@
   /* ════ Repo-style shell: top bar + [ TOC · feed · About ] ════ */
   /* Sticky header — no background of its own (blends with the page); the
      divider is on the inner row so it only spans the content max-width. */
-  .topbar { position: sticky; top: 0; z-index: 20; background: var(--bg); }
-  .topbar-inner { max-width: 1320px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
+  .topbar { position: sticky; top: 0; z-index: 20; background: transparent; pointer-events: none; }
+  .topbar a, .topbar button { pointer-events: auto; }
+  .topbar-inner { max-width: 1320px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 12px; }
   .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
   .brand-logo { display: inline-flex; }
   .brand-logo svg { height: 16px; width: auto; display: block; }
@@ -330,7 +331,7 @@
 
   /* Center — feed head (tabs + sort) above the entries. */
   .feed-head { display: flex; align-items: center; gap: 10px; margin-bottom: 2px; }
-  .entry { scroll-margin-top: 92px; }
+  .entry { scroll-margin-top: 24px; cursor: pointer; }
 
   /* Right — quick actions / About. Plain icon+label rows (no cards), spread
      out, with a full-width hairline divider between groups (ref: invoice UI). */
@@ -339,6 +340,15 @@
   .about-title { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--fg-3); margin: 0; }
   .about-desc { font-size: var(--t-meta); line-height: 1.55; color: var(--fg-2); margin: 0; }
   .about-divider { height: 1px; width: 100%; background: var(--border); border: 0; margin: 2px 0; }
+  /* Copy-command — the standard one-line code box with a copy button. */
+  .code-copy { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-code); padding: 7px 8px 7px 10px; }
+  .code-copy code { flex: 1; min-width: 0; font-family: var(--mono); font-size: var(--t-meta); color: var(--fg); background: none; padding: 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+  .code-copy code::-webkit-scrollbar { display: none; }
+  .copy-btn { flex: none; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; color: var(--fg-3); background: none; border: 0; border-radius: 5px; cursor: pointer; transition: color .15s ease, background .15s ease; }
+  .copy-btn:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 6%, transparent); }
+  .copy-btn:active { transform: scale(0.94); }
+  .copy-btn svg { width: 14px; height: 14px; }
+  .copy-btn.copied { color: var(--green); }
   .qa { display: inline-flex; align-items: center; gap: 12px; font-family: var(--sans); font-size: var(--t-body); color: var(--fg); text-decoration: none; text-align: left; background: none; border: 0; border-radius: 6px; padding: 4px 4px; cursor: pointer; transition: color .15s ease; }
   .qa:hover { color: var(--fg); }
   .qa:hover svg { color: var(--fg); }
@@ -490,6 +500,16 @@
       <section class="about-sec">
         <h2 class="about-title">About</h2>
         <p class="about-desc">The progress log for <b>__PROJECT__</b> — every feature &amp; build-out, newest first. Replace this with a sentence about the project.</p>
+      </section>
+
+      <hr class="about-divider" />
+
+      <section class="about-sec">
+        <h2 class="about-title">Add to your workspace</h2>
+        <div class="code-copy">
+          <code>npx skills add tjcages/progress-log</code>
+          <button class="copy-btn" id="copy-cmd" type="button" aria-label="Copy command" data-cmd="npx skills add tjcages/progress-log"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        </div>
       </section>
 
       <hr class="about-divider" />
@@ -1035,6 +1055,16 @@
 
         btn.addEventListener("click", function () { setOpen(entry, !entry.classList.contains("open")); syncExpandAll(); });
 
+        // Tap anywhere on the card to toggle — except on a link, button (toggle
+        // + trash keep their own behavior), or an image; and never while the
+        // user is selecting text.
+        entry.addEventListener("click", function (e) {
+          if (e.target.closest("a, button, img, video")) return;
+          if (window.getSelection && String(window.getSelection())) return;
+          setOpen(entry, !entry.classList.contains("open"));
+          syncExpandAll();
+        });
+
         var st = entry.querySelector(".status");
         var s = st && st.getAttribute("data-status");
         setOpen(entry, s === "new" || s === "wip");
@@ -1114,6 +1144,30 @@
       scan();
       var list = document.querySelector(".entries");
       if (list) new MutationObserver(scan).observe(list, { childList: true, subtree: true });
+    })();
+
+    // Copy-command — copy the "add this skill" command, flash a check on success.
+    (function () {
+      var btn = document.getElementById("copy-cmd");
+      if (!btn) return;
+      var COPY = btn.innerHTML;
+      var CHECK = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      var t;
+      btn.addEventListener("click", function () {
+        var cmd = btn.getAttribute("data-cmd") || "";
+        function done() {
+          btn.classList.add("copied"); btn.innerHTML = CHECK;
+          clearTimeout(t); t = setTimeout(function () { btn.classList.remove("copied"); btn.innerHTML = COPY; }, 1500);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(cmd).then(done).catch(done);
+        } else {
+          var ta = document.createElement("textarea"); ta.value = cmd; ta.style.position = "fixed"; ta.style.opacity = "0";
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand("copy"); } catch (e) {}
+          document.body.removeChild(ta); done();
+        }
+      });
     })();
   </script>
 </body>
