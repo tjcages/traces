@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Readme · Traces</title>
+<title>Traces / __PROJECT__</title>
+<meta property="og:title" content="Traces / __PROJECT__" />
+<meta name="twitter:title" content="Traces / __PROJECT__" />
 <!--
   README PAGE  —  what the progress log is and how to use it.
   Shares the Trace (index.html) shell verbatim — same top bar, brand, left
@@ -67,14 +69,14 @@
   .about-title { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--fg-3); margin: 0; }
   .about-desc { font-size: var(--t-meta); line-height: 1.55; color: var(--fg-2); margin: 0; }
   .about-divider { height: 1px; width: 100%; background: var(--border); border: 0; margin: 2px 0; }
-  .qa { display: inline-flex; align-items: center; gap: 12px; font-family: var(--sans); font-size: var(--t-body); color: var(--fg); text-decoration: none; text-align: left; background: none; border: 0; border-radius: 6px; padding: 4px 4px; cursor: pointer; transition: color .15s ease; }
+  .qa { display: inline-flex; align-items: center; gap: 12px; font-family: var(--sans); font-size: var(--t-body); color: var(--fg); text-decoration: none; text-align: left; background: none; border: 0; border-radius: 6px; padding: 5px 8px; margin: 0 -8px; cursor: pointer; transition: color .15s ease, background .15s ease; }
   .qa:hover { color: var(--fg); }
   .qa:hover svg { color: var(--fg); }
   .qa:active { transform: scale(0.98); }
   .qa svg { width: 17px; height: 17px; color: var(--fg-2); flex: none; transition: color .15s ease; }
-  .qa.active { color: var(--fg); font-weight: 600; }
+  /* Selected page — a soft grey pill, like the top-bar GitHub button's hover. */
+  .qa.active { color: var(--fg); font-weight: 600; background: var(--secondary); }
   .qa.active svg { color: var(--fg); }
-  .qa.active::after { content: ""; margin-left: auto; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex: none; }
 
   /* ── Expandable cards ── */
   details.card { background: var(--primary); border: 1px solid var(--border); border-radius: var(--r-card); margin-bottom: 10px; overflow: hidden; scroll-margin-top: 92px; }
