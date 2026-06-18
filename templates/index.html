@@ -401,25 +401,32 @@
   .entry-toggle:hover { color: var(--fg-2); background: color-mix(in srgb, var(--fg) 5%, transparent); }
   .entry-toggle .et-chev { width: 13px; height: 13px; display: inline-flex; transition: transform .28s cubic-bezier(0.22,1,0.36,1); }
   .entry.open .entry-toggle .et-chev { transform: rotate(180deg); }
-  /* Right-side aside — the status pill pinned to the card's top-right, with a
-     tiny image preview stacked beneath it WHILE THE CARD IS COLLAPSED. JS moves
-     the status here and (when there's media) appends the thumbnail. */
+  /* Status pill pinned to the card's top-right. */
   .entry-aside {
     position: absolute; top: var(--pad-card); right: var(--pad-card); z-index: 1;
     display: flex; flex-direction: column; align-items: flex-end; gap: 9px;
   }
   .entry-aside .status { position: static; order: 0; margin: 0; }
+  /* Image preview — pinned down the card's LEFT edge while collapsed, to the
+     left of the title + details. Bounded to the card's content box (height
+     minus padding) so a tall image scales down to fit and never spills past
+     the card's edges. Hidden once open — the full media takes over. */
   .entry-thumb {
-    display: block; width: 92px; height: auto; border-radius: 8px;
-    border: 1px solid var(--border); background: var(--secondary);
+    position: absolute; top: var(--pad-card); bottom: var(--pad-card); left: var(--pad-card); z-index: 1;
+    width: 92px; display: flex; align-items: flex-start;
+  }
+  .entry-thumb img {
+    max-width: 100%; max-height: 100%; width: auto; height: auto;
+    border-radius: 8px; border: 1px solid var(--border); background: var(--secondary); display: block;
   }
   .entry.open .entry-thumb { display: none; }
   /* Collapsed: title sits flush at the top (the time/updated meta is hidden),
-     so top & bottom padding read even. The title clears the pinned status
-     pill — and, when there's a thumbnail, the wider preview. */
+     so top & bottom padding read even. The title clears the pinned status on
+     the right; title + toolbar clear the image preview on the left. */
   .entry:not(.open) > .entry-head { display: none; }
   .entry:not(.open) > h2 { padding-right: 64px; }
-  .entry.has-thumb:not(.open) > h2 { padding-right: 116px; }
+  .entry.has-thumb:not(.open) > h2,
+  .entry.has-thumb:not(.open) > .entry-toolbar { padding-left: 108px; }
   /* Expanded under-day entries: the day header already states the day, so the
      (now-empty) meta row would only add a dead gap above the title — drop it. */
   .entry.under-day > .entry-head { display: none; }
@@ -1077,21 +1084,25 @@
         bar.appendChild(btn);
         entry.appendChild(bar);
 
-        // Pin the status pill to the card's top-right; when there's media, stack
-        // a tiny aspect-preserving preview beneath it (shown only while collapsed).
+        // Pin the status pill to the card's top-right.
         var aside = document.createElement("div"); aside.className = "entry-aside";
         var status = head ? head.querySelector(".status") : null;
         if (status) aside.appendChild(status);
+        if (aside.children.length) entry.appendChild(aside);
+
+        // When there's media, mount an aspect-preserving preview down the card's
+        // LEFT edge (collapsed only); CSS bounds it to the card's content box.
         if (hasMedia) {
           var firstImg = media.querySelector("img");
           if (firstImg) {
-            var thumb = document.createElement("img"); thumb.className = "entry-thumb";
+            var tw = document.createElement("div"); tw.className = "entry-thumb";
+            var thumb = document.createElement("img");
             thumb.src = firstImg.getAttribute("src"); thumb.alt = ""; thumb.setAttribute("aria-hidden", "true");
-            aside.appendChild(thumb);
+            tw.appendChild(thumb);
+            entry.appendChild(tw);
             entry.classList.add("has-thumb");
           }
         }
-        if (aside.children.length) entry.appendChild(aside);
 
         btn.addEventListener("click", function () { setOpen(entry, !entry.classList.contains("open")); syncExpandAll(); });
 
