@@ -262,6 +262,11 @@
         for (var i = 0; i < links.length; i++) {
           if (links[i].el.getBoundingClientRect().top - 120 <= 0) cur = links[i]; else break;
         }
+        // At the page bottom the final sections can't scroll past the line —
+        // snap to the last item so the TOC reaches the end.
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+          cur = links[links.length - 1];
+        }
         thumb.style.opacity = "1";
         thumb.style.height = cur.a.offsetHeight + "px";
         thumb.style.transform = "translateY(" + cur.a.offsetTop + "px)";

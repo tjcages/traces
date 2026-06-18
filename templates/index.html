@@ -932,6 +932,12 @@
         for (var i = 0; i < links.length; i++) {
           if (links[i].entry.getBoundingClientRect().top - 110 <= 0) idx = i; else break;
         }
+        // Near the page bottom the final entries can't scroll past the 110px
+        // line, so the spy would stick short of the end. Once the page is
+        // scrolled to (essentially) the bottom, snap to the last item.
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+          idx = links.length - 1;
+        }
         var cur = links[idx];
         thumb.style.opacity = "1";
         thumb.style.height = cur.a.offsetHeight + "px";
