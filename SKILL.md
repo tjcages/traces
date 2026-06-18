@@ -1,5 +1,5 @@
 ---
-name: progress-log
+name: traces
 description: >-
   Install and maintain a self-contained, user-facing PROGRESS LOG for a repo
   (progress/index.html — timestamped entries, status pills, condense + per-post
@@ -15,7 +15,7 @@ description: >-
   progress — but NOT for reading a dependency's external CHANGELOG.md.
 ---
 
-# Progress log
+# Traces
 
 A persistent, self-contained **`progress/index.html`** that tracks every feature and
 build-out in a repo — newest first, scannable in two seconds, viewable on a phone via an
@@ -27,7 +27,7 @@ tab, **Architecture**, is a living map of the system. No build step, no dependen
 Run the installer from (or pointing at) the target repo. Pick an **enforcement mode**:
 
 ```bash
-bash ~/.claude/skills/progress-log/scripts/install.sh --mode rule    # default
+bash ~/.claude/skills/traces/scripts/install.sh --mode rule    # default
 #                                                      --mode hook    # + forcing Stop hook
 #                                                      --mode manual  # scaffold only
 ```

@@ -1,4 +1,4 @@
-# progress-log — Traces (a Claude Code skill)
+# Traces (a Claude Code skill)
 
 ![Traces — a GitHub-repo-style progress log: top bar with logo, a left table-of-contents that ticks through 8 items as you scroll, a centered feed of collapsible entries grouped by day, and a right rail of quick actions](assets/hero.png)
 
@@ -19,11 +19,11 @@ relative times, and optional one-tap live preview over a Cloudflare tunnel.
 
 ## Where it lives
 A skill is just a folder Claude Code auto-discovers under `~/.claude/skills/`. This one is
-`~/.claude/skills/progress-log/`. Nothing is hosted on a server — it's local files.
+`~/.claude/skills/traces/`. Nothing is hosted on a server — it's local files.
 
 ## Install into a repo
 ```bash
-bash ~/.claude/skills/progress-log/scripts/install.sh --mode rule
+bash ~/.claude/skills/traces/scripts/install.sh --mode rule
 #   rule   = scaffold + always-on rule in the repo's CLAUDE.md   (recommended)
 #   hook   = rule + a Stop hook that blocks finishing if code changed but the log didn't
 #   manual = scaffold only (invoke the skill by hand)
@@ -42,9 +42,9 @@ hand you a tappable link.
 
 ## Share it
 It's a folder — copy it.
-- **Zip:** `zip -r progress-log.zip ~/.claude/skills/progress-log` → recipient unzips into
+- **Zip:** `zip -r traces.zip ~/.claude/skills/traces` → recipient unzips into
   their `~/.claude/skills/`.
-- **Git:** push it to a repo; recipient clones into `~/.claude/skills/progress-log`.
+- **Git:** push it to a repo; recipient clones into `~/.claude/skills/traces`.
 
 ## What's inside
 - `SKILL.md` — the method + install/usage Claude loads.

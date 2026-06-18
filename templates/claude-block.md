@@ -1,4 +1,4 @@
-<!-- PROGRESS-LOG:START (managed by the progress-log skill; edit between these markers) -->
+<!-- PROGRESS-LOG:START (managed by the Traces skill; edit between these markers) -->
 ## Progress log — non-negotiable (every agent, every session)
 
 Keep **`progress/index.html`** current as you work — it's the user-facing log of what

@@ -1,4 +1,4 @@
-// progress-shot.mjs — capture a progress-log screenshot at a REAL viewport.
+// progress-shot.mjs — capture a Traces screenshot at a REAL viewport.
 // Headless Chrome's --window-size doesn't set the layout viewport (it renders
 // wide and crops), so mobile shots come out clipped. This drives Chrome over
 // the DevTools protocol with proper device-metrics emulation instead.

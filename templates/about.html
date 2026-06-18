@@ -164,7 +164,7 @@
         <summary><span class="chev"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Install into a repo <span class="tag">install.sh</span></summary>
         <div class="body">
           <p>One command scaffolds <code>progress/</code> + <code>scripts/</code> and wires the rule:</p>
-          <div class="code"><div class="code-bar"><span class="d"></span><span class="lang">bash</span></div><pre><span class="k">bash</span> ~/.claude/skills/progress-log/scripts/install.sh <span class="s">--mode rule</span>
+          <div class="code"><div class="code-bar"><span class="d"></span><span class="lang">bash</span></div><pre><span class="k">bash</span> ~/.claude/skills/traces/scripts/install.sh <span class="s">--mode rule</span>
 <span class="c"># --mode hook   → also a Stop hook that blocks finishing if code</span>
 <span class="c">#                 changed but the log didn't (the forcing function)</span>
 <span class="c"># --mode manual → scaffold only; invoke the skill by hand</span></pre></div>
@@ -198,10 +198,10 @@
         <summary><span class="chev"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> What a "skill" is</summary>
         <div class="body">
           <p>A <b>skill</b> is a folder of instructions (plus helper files) Claude Code loads.
-            This one lives locally at <code>~/.claude/skills/progress-log/</code> —
+            This one lives locally at <code>~/.claude/skills/traces/</code> —
             <code>~</code> is your home folder, and Claude Code auto-discovers skills there.
             Nothing is hosted on a server; it's just files.</p>
-          <div class="code"><div class="code-bar"><span class="d"></span><span class="lang">~/.claude/skills/progress-log/</span></div><pre>SKILL.md            <span class="c"># method Claude loads</span>
+          <div class="code"><div class="code-bar"><span class="d"></span><span class="lang">~/.claude/skills/traces/</span></div><pre>SKILL.md            <span class="c"># method Claude loads</span>
 templates/          <span class="c"># index.html, architecture.html, stack.html, about.html, …</span>
 scripts/            <span class="c"># install.sh, progress-tunnel.sh, progress-server.py</span></pre></div>
         </div>
@@ -213,12 +213,12 @@ scripts/            <span class="c"># install.sh, progress-tunnel.sh, progress-s
           <p>The registry for <code>npx skills</code> (<a href="https://skills.sh">skills.sh</a>)
             is just <b>GitHub</b>: any public repo with a <code>SKILL.md</code> at its root is a
             valid skill. Push this folder to a repo, then anyone installs it with one line:</p>
-          <div class="code"><div class="code-bar"><span class="d"></span><span class="lang">publish (once)</span></div><pre><span class="k">cd</span> ~/.claude/skills/progress-log
-<span class="k">git</span> init &amp;&amp; <span class="k">git</span> add -A &amp;&amp; <span class="k">git</span> commit -m <span class="s">"progress-log skill"</span>
-<span class="k">gh</span> repo create <span class="s">progress-log</span> --public --source=. --push</pre></div>
-          <div class="code"><div class="code-bar"><span class="d"></span><span class="lang">anyone installs</span></div><pre><span class="k">npx</span> skills add <span class="s">&lt;your-username&gt;/progress-log</span></pre></div>
-          <p>Or share the folder directly — <code>zip -r progress-log.zip
-            ~/.claude/skills/progress-log</code> — and they unzip it into their own
+          <div class="code"><div class="code-bar"><span class="d"></span><span class="lang">publish (once)</span></div><pre><span class="k">cd</span> ~/.claude/skills/traces
+<span class="k">git</span> init &amp;&amp; <span class="k">git</span> add -A &amp;&amp; <span class="k">git</span> commit -m <span class="s">"traces skill"</span>
+<span class="k">gh</span> repo create <span class="s">traces</span> --public --source=. --push</pre></div>
+          <div class="code"><div class="code-bar"><span class="d"></span><span class="lang">anyone installs</span></div><pre><span class="k">npx</span> skills add <span class="s">&lt;your-username&gt;/traces</span></pre></div>
+          <p>Or share the folder directly — <code>zip -r traces.zip
+            ~/.claude/skills/traces</code> — and they unzip it into their own
             <code>~/.claude/skills/</code>.</p>
         </div>
       </details>

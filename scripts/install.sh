@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# install.sh — scaffold the progress-log system into a repo.
+# install.sh — scaffold the Traces progress-log system into a repo.
 #
 #   bash install.sh [--root <repo>] [--mode rule|hook|manual]
 #
@@ -102,4 +102,4 @@ HOOK
   *) echo "unknown mode: $MODE" >&2; exit 1;;
 esac
 
-echo "✓ progress-log installed in $ROOT (mode=$MODE). Open progress/index.html."
+echo "✓ Traces installed in $ROOT (mode=$MODE). Open progress/index.html."
