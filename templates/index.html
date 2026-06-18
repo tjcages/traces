@@ -443,26 +443,30 @@
      height — a title line + the toggle — never stretched by their image. */
   .entry:not(.open) > h2 { padding-right: 64px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   /* Image preview — only while collapsed. The card is a 2-column grid: the
-     title + show-details group on the LEFT, a larger image on the RIGHT that
-     fills the space from the status down to the toggle. The image is taller
-     than that space and CLIPPED at the bottom (~⅓ hidden), and it spans only
-     the title + toolbar rows — never the collapsing details row — so the card
-     height stays constant and the image never resizes through the animation. */
+     title + show-details group on the LEFT, a larger image on the RIGHT. The
+     image sits BELOW the status (both inset the same from the right edge) and
+     bleeds DOWN through the bottom padding to the card's bottom EDGE, where the
+     card clips it. It's anchored to the title + toolbar rows — never the
+     animating details row — so the card height stays constant and the image
+     never resizes through the open/close animation. */
   .entry-thumb { display: none; }
   .entry.has-thumb:not(.open) {
-    display: grid; grid-template-columns: minmax(0, 1fr) 152px;
+    display: grid; grid-template-columns: minmax(0, 1fr) 184px;
     grid-template-rows: auto auto; column-gap: 16px; align-items: start;
+    overflow: hidden;   /* clip the image at the card's bottom edge */
   }
   .entry.has-thumb:not(.open) > h2 { grid-column: 1; grid-row: 1; padding-right: 0; }
   .entry.has-thumb:not(.open) > .entry-toolbar { grid-column: 1; grid-row: 2; }
   .entry.has-thumb:not(.open) > .entry-thumb {
     display: block; grid-column: 2; grid-row: 1 / 3; align-self: stretch;
-    position: relative; min-height: 0; overflow: hidden;
-    border: 1px solid var(--border); border-bottom: 0; border-radius: 8px 8px 0 0; background: var(--secondary);
+    position: relative; min-height: 0;
   }
   .entry.has-thumb:not(.open) > .entry-thumb img {
-    position: absolute; inset: 0 0 auto 0; width: 100%; height: 150%;
+    position: absolute; top: 24px; left: 0; width: 100%;
+    height: calc(100% - 24px + var(--pad-card));   /* below the status → down to the card's bottom edge */
     object-fit: cover; object-position: top; display: block;
+    border: 0.5px solid color-mix(in srgb, var(--fg) 5%, transparent); border-bottom: 0;
+    border-radius: 5px 5px 0 0; background: var(--secondary);
   }
   .entry.has-thumb:not(.open) > .entry-details { grid-column: 1 / -1; grid-row: 3; }
   /* Expanded under-day entries: the day header already states the day, so the
