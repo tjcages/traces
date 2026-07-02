@@ -1,0 +1,21 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "traces",
+  "description": "Traces — a self-contained, user-facing progress log for any repo.",
+  "owner": {
+    "name": "Off-brand Studio"
+  },
+  "plugins": [
+    {
+      "name": "traces",
+      "description": "Install and maintain a self-contained, user-facing progress log (progress/index.html) for any repo — timestamped entries, status pills, a living Architecture map and Tech-stack page, optional live preview.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Off-brand Studio"
+      },
+      "source": ".",
+      "category": "productivity",
+      "strict": false
+    }
+  ]
+}

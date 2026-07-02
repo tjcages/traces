@@ -1,0 +1,12 @@
+{
+  "name": "traces",
+  "description": "Install and maintain a self-contained, user-facing progress log (progress/index.html) for any repo — timestamped entries, status pills, condense + per-post delete, a living Architecture map, a Tech-stack page, and optional Cloudflare-tunnel live preview.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Off-brand Studio"
+  },
+  "homepage": "https://github.com/tjcages/traces",
+  "repository": "https://github.com/tjcages/traces",
+  "license": "MIT",
+  "keywords": ["progress", "changelog", "progress-log", "skill", "documentation"]
+}

@@ -10,6 +10,10 @@ lives in its `progress/` log; this file is the release-tagged summary.
 - Self-hosts its own progress log (`progress/`) as the engine dogfood surface.
 - `scripts/sync-engine.mjs` — safely move the engine between the template and a live install
   (push/pull), preserving entries + About, with validation and `.bak` backups.
+- Restructured to the plugin-shaped layout (`skills/traces/`) that serves every channel:
+  `npx skills add`, Claude Code plugin, and clone+symlink — from one source, no duplication.
+- Added a Claude Code plugin (`.claude-plugin/plugin.json`) + self-marketplace
+  (`.claude-plugin/marketplace.json`).
 
 ## [0.1.0] — 2026-07-02
 First versioned cut. The engine and installer as they stand today.

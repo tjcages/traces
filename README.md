@@ -17,14 +17,33 @@ log** — a self-contained `progress/index.html` laid out like a GitHub repo pag
 Plus an **Architecture** tab that stays current, status pills, condense + per-post delete,
 relative times, and optional one-tap live preview over a Cloudflare tunnel.
 
+## Add Traces to your agent
+Three ways, one layout — the repo is plugin-shaped (`skills/traces/SKILL.md`), which every
+channel understands:
+
+```bash
+# 1. npx (Vercel skills CLI) — installs the skill straight from GitHub
+npx skills add tjcages/traces
+
+# 2. Claude Code plugin (the repo is its own marketplace)
+/plugin marketplace add tjcages/traces
+/plugin install traces@traces
+
+# 3. Clone + symlink (how it's developed here)
+git clone https://github.com/tjcages/traces ~/Workspace/traces
+ln -s ~/Workspace/traces/skills/traces ~/.claude/skills/traces
+```
+
 ## Where it lives
 The source of truth is this standalone repo at **`~/Workspace/traces`** (git remote
-`github.com/tjcages/traces`). Claude Code auto-discovers skills under `~/.claude/skills/`, so
-it's **symlinked** in — `~/.claude/skills/traces` → `~/Workspace/traces` — exactly like the
-other workspace-hosted skills (`apple-ui`, `web-ui`). Develop it in the workspace; it loads as
-a skill through the symlink. Nothing is hosted on a server — it's local files.
+`github.com/tjcages/traces`). The skill payload sits at **`skills/traces/`**; Claude Code
+auto-discovers skills under `~/.claude/skills/`, so it's **symlinked** in —
+`~/.claude/skills/traces` → `~/Workspace/traces/skills/traces` — like the other
+workspace-hosted skills (`apple-ui`, `web-ui`). Develop it in the workspace; it loads through
+the symlink. Nothing is hosted on a server — it's local files.
 
-## Install into a repo
+## Install the log into a repo
+Once the skill is available, scaffold the progress log into any project:
 ```bash
 bash ~/.claude/skills/traces/scripts/install.sh --mode rule
 #   rule   = scaffold + always-on rule in the repo's CLAUDE.md   (recommended)
@@ -44,19 +63,20 @@ at the bottom of the hosted page) and an agent will run `scripts/progress-tunnel
 hand you a tappable link.
 
 ## Share it
-It's a repo — clone or copy it.
-- **Git:** it's pushed to `github.com/tjcages/traces`; a recipient clones it (anywhere) and
-  symlinks it into `~/.claude/skills/traces`.
-- **Zip:** `zip -r traces.zip ~/Workspace/traces` → recipient unzips and symlinks into
-  their `~/.claude/skills/`.
+See **Add Traces to your agent** above (npx / plugin / clone). To hand someone a
+self-contained bundle instead, `bash skills/traces/scripts/package.sh` builds
+`dist/traces-v<VERSION>.skill` (a zip with `SKILL.md` at its root) for claude.ai's Skills
+uploader or `npx skills add ./traces-v<VERSION>.skill`.
 
 ## What's inside
-- `SKILL.md` — the method + install/usage Claude loads.
-- `templates/` — `index.html` (the log engine), `architecture.html` + `architectures.data.js`
-  (the Architecture tab), `about.html` (in-page guide), `README.md` (the protocol),
-  `preview.json`, `claude-block.md` (the injected rule).
-- `scripts/` — `install.sh`, `sync-engine.mjs` (move the engine between the template and a
-  live install without touching its entries — see below), `progress-server.py` (serves +
+- `.claude-plugin/` — `plugin.json` (the Claude Code plugin manifest) + `marketplace.json`
+  (makes the repo its own one-plugin marketplace).
+- `skills/traces/SKILL.md` — the method + install/usage Claude loads.
+- `skills/traces/templates/` — `index.html` (the log engine), `architecture.html` +
+  `architectures.data.js` (the Architecture tab), `about.html` (in-page guide), `stack.html`
+  (tech-stack page), `README.md` (the protocol), `preview.json`, `claude-block.md` (injected rule).
+- `skills/traces/scripts/` — `install.sh`, `sync-engine.mjs` (move the engine between the
+  template and a live install without touching its entries — see below), `progress-server.py` (serves +
   accepts the checkbox write), `progress-tunnel.sh`, `progress-shot.mjs` (real-viewport
   screenshots), `progress-standalone.mjs`, `package.sh` (build the `.skill` bundle).
 
