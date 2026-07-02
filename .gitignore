@@ -1,0 +1,11 @@
+# build output
+/dist/
+*.skill
+
+# os / editor cruft
+.DS_Store
+*.swp
+
+# local runtime artifacts (tunnel url, screenshots scratch)
+/tmp/
+progress/media/*.tmp
