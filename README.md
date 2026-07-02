@@ -18,8 +18,11 @@ Plus an **Architecture** tab that stays current, status pills, condense + per-po
 relative times, and optional one-tap live preview over a Cloudflare tunnel.
 
 ## Where it lives
-A skill is just a folder Claude Code auto-discovers under `~/.claude/skills/`. This one is
-`~/.claude/skills/traces/`. Nothing is hosted on a server — it's local files.
+The source of truth is this standalone repo at **`~/Workspace/traces`** (git remote
+`github.com/tjcages/traces`). Claude Code auto-discovers skills under `~/.claude/skills/`, so
+it's **symlinked** in — `~/.claude/skills/traces` → `~/Workspace/traces` — exactly like the
+other workspace-hosted skills (`apple-ui`, `web-ui`). Develop it in the workspace; it loads as
+a skill through the symlink. Nothing is hosted on a server — it's local files.
 
 ## Install into a repo
 ```bash
@@ -41,10 +44,11 @@ at the bottom of the hosted page) and an agent will run `scripts/progress-tunnel
 hand you a tappable link.
 
 ## Share it
-It's a folder — copy it.
-- **Zip:** `zip -r traces.zip ~/.claude/skills/traces` → recipient unzips into
+It's a repo — clone or copy it.
+- **Git:** it's pushed to `github.com/tjcages/traces`; a recipient clones it (anywhere) and
+  symlinks it into `~/.claude/skills/traces`.
+- **Zip:** `zip -r traces.zip ~/Workspace/traces` → recipient unzips and symlinks into
   their `~/.claude/skills/`.
-- **Git:** push it to a repo; recipient clones into `~/.claude/skills/traces`.
 
 ## What's inside
 - `SKILL.md` — the method + install/usage Claude loads.
